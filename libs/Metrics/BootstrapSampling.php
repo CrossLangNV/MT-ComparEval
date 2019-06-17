@@ -26,7 +26,7 @@ class BootstrapSampler {
 			for( $j = 0; $j < $count; $j++ ) {
 				$rand = mt_rand( 0, $count - 1 );
 
-				$metric->addSentence( $sentences[ $rand ][ 'experiment' ][ 'reference' ], $sentences[ $rand ][ 'translation' ], $sentences[ $rand ][ 'meta' ] );
+				$metric->addSentence( $sentences[ $rand ][ 'test_set' ][ 'reference' ], $sentences[ $rand ][ 'translation' ], $sentences[ $rand ][ 'meta' ] );
 			}
 
 			$samples[] = $metric->getScore();

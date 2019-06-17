@@ -1,5 +1,5 @@
 {block #content}
-<h1>New Task for {$experiment->name}</h1>
+<h1>New Task for {$testSet->name}</h1>
 
 <form class="form-horizontal" method="POST" action="{plink Api:Tasks:upload}" enctype="multipart/form-data">
 	<div class="control-group">
@@ -15,6 +15,12 @@
 		</div>
 	</div>
 	<div class="control-group">
+		<label class="control-label" for="engines_id">engines_id</label>
+		<div class="controls">
+			<input type="text" id="engines_id" name="engines_id" class="input-block-level">
+		</div>
+	</div>
+	<div class="control-group">
 		<label class="control-label" for="translation">Translation</label>
 		<div class="controls">
 			<input type="file" id="translation" name="translation" class="input-block-level">
@@ -24,7 +30,7 @@
 		<div class="controls">
 			<button type="submit" class="btn">Save</button>
 			<input type="hidden" name="redirect" value="new" />
-			<input type="hidden" name="experiment_id" value="{$experiment->id}" />
+			<input type="hidden" name="test_set_id" value="{$testSet->id}" />
 		</div>
 	</div>
 </form>

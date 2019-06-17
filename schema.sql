@@ -1,31 +1,53 @@
-CREATE TABLE "experiments" (
+CREATE TABLE "language_pairs" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "source_language" text NOT NULL,
+  "target_language" text NOT NULL,
+  "url_key" text NOT NULL UNIQUE,
+  "visible" integer(0) NULL,
+  UNIQUE("source_language","target_language")
+);
+
+INSERT INTO `language_pairs` (`id`, `source_language`, `target_language`, `url_key`, `visible`) VALUES (1, 'en', 'nl', 'en-nl', 1);
+
+CREATE TABLE "test_sets" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "language_pairs_id" integer NOT NULL,
   "name" text NOT NULL,
   "url_key" text NOT NULL UNIQUE,
   "description" text NOT NULL,
   "visible" integer(0) NULL
 );
 
-
 CREATE TABLE "sentences" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  "experiments_id" integer NOT NULL,
+  "test_sets_id" integer NOT NULL,
   "source" text NOT NULL,
   "reference" text NOT NULL,
-  FOREIGN KEY ("experiments_id") REFERENCES "experiments" ("id") ON DELETE CASCADE
+  FOREIGN KEY ("test_sets_id") REFERENCES "test_sets" ("id") ON DELETE CASCADE
 );
 
+CREATE TABLE "engines" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "language_pairs_id" integer NOT NULL,
+  "name" text NOT NULL,
+  "url_key" text NOT NULL UNIQUE,
+  "visible" integer(0) NULL
+);
+
+INSERT INTO `engines` (`id`, `language_pairs_id`, `name`, `url_key`, `visible`) VALUES (1, 1, 'heavyCrow', 'heavyCrow-en-nl', 1);
+INSERT INTO `engines` (`id`, `language_pairs_id`, `name`, `url_key`, `visible`) VALUES (2, 1, 'splendidWeasle', 'splendidWeasle-en-nl', 1);
 
 CREATE TABLE "tasks" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  "experiments_id" integer NOT NULL,
+  "test_sets_id" integer NOT NULL,
+  "engines_id" integer NOT NULL,
   "name" text NOT NULL,
-  "url_key" text NOT NULL,
+  "url_key" text NOT NULL UNIQUE,
   "description" text NULL, "visible" integer(0) NULL,
-  FOREIGN KEY ("experiments_id") REFERENCES "experiments" ("id") ON DELETE CASCADE,
-  UNIQUE("experiments_id","url_key")
+  FOREIGN KEY ("test_sets_id") REFERENCES "test_sets" ("id") ON DELETE CASCADE,
+  FOREIGN KEY ("engines_id") REFERENCES "engines" ("id") ON DELETE CASCADE,
+  UNIQUE("test_sets_id","engines_id")
 );
-
 
 CREATE TABLE "translations" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -31,16 +31,18 @@ common:
 		router: @routerFactory::createRouter
 		authenticator: Authenticator
 		ngramsCache: Nette\Caching\Cache( Nette\Caching\Storages\FileStorage( %appDir%/../storage/precomputed_ngrams ) )
-		terCache: 
+		terCache:
 			class: Nette\Caching\Cache( Nette\Caching\Storages\FileStorage( %appDir%/../storage/ter ) )
-			autowired: no			
+			autowired: no
 		hjersonCache:
 			class: Nette\Caching\Cache( Nette\Caching\Storages\FileStorage( %appDir%/../storage/hjerson ) )
 			autowired: no
 		cacheStorage:
 				class: Nette\Caching\Storages\DevNullStorage
 		# Models
-		experiments: Experiments
+		languagePairs: LanguagePairs
+		testSets: TestSets
+		engines: Engines
 		tasks: Tasks
 		sentences: Sentences
 		metrics: Metrics
@@ -66,15 +68,27 @@ common:
 		arithmeticRecallMetric:
 			factory: ArithmeticRecall
 
-		experimentsImporter:
-			class: ExperimentsImporter
+		languagePairsImporter:
+			class: LanguagePairsImporter
+			setup:
+				- setLogger( @logger )
+				- setNormalizer( @normalizer )
+
+		enginesImporter:
+			class: EnginesImporter
+			setup:
+				- setLogger( @logger )
+				- setNormalizer( @normalizer )
+
+		testSetsImporter:
+			class: TestSetsImporter
 			setup:
 				- setLogger( @logger )
 				- setNormalizer( @normalizer )
 
 		tasksImporter:
 			class: TasksImporter(
-				@experiments,
+				@testSets,
 				@tasks,
 				@ngrams,
 				@bootstrapSampler,

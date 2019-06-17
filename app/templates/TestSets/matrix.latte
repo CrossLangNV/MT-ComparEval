@@ -1,0 +1,44 @@
+{block #content}
+<h1>Matrix view</h1>
+
+{if count($languagePairs)}
+{foreach $languagePairs->order( 'url_key' ) as $languagePair}
+  <h2>{$languagePair['source_language']}-{$languagePair['target_language']}</h2>
+  {if count($engines)}
+    <table class="table table-bordered">
+      <tr>
+        <td></td>
+        {foreach $engines as $engine}
+          {if $engine['language_pairs_id'] == $languagePair['id']}
+            <th>{$engine['name']}</th>
+          {/if}
+        {/foreach}
+      </tr>
+      {if count($testSets)}
+        {foreach $testSets as $testSet}
+          {if $testSet['language_pairs_id'] == $languagePair['id']}
+            <tr>
+              <th>
+                <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+              </th>
+              {foreach $engines as $engine}
+                {if $tableData[$testSet['id']][$iterator->counter] == "0"}
+                  <td>
+                    <a href="{plink Tasks:new $testSet['id']}" class="btn btn-default">Add Task</a>
+                  </td>
+                {else}
+                  <td>{$tableData[$testSet['id']][$iterator->counter]}</td>
+                {/if}
+              {/foreach}
+            </tr>
+          {/if}
+        {/foreach}
+      {/if}
+    </table>
+  {/if}
+{/foreach}
+{else}
+  <div class="alert">
+    There is no data yet.
+  </div>
+{/if}

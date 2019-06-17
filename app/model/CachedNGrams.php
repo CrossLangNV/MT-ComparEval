@@ -18,8 +18,8 @@ class CachedNGrams extends NGrams {
 		$this->tasksModel = $tasksModel;
 	}
 
-	public function precomputeNgrams( $experimentId, $taskId ) {
-		$tasks = $this->tasksModel->getTasks( $experimentId );
+	public function precomputeNgrams( $testSetId, $taskId ) {
+		$tasks = $this->tasksModel->getTasks( $testSetId );
 
 		foreach( $tasks as $task ) {
 			if ( $task->id == $taskId ) {

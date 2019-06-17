@@ -25,7 +25,7 @@ abstract class Importer {
 	public function importFromFolder( Folder $folder ) {
 		try {
 			$config = array( 'url_key' => $folder->getName() );
-			$metadata = array( 'experiment_id' => -1, 'task_id' => -1 );
+			$metadata = array( 'test_set_id' => -1, 'task_id' => -1 );
 
 			$config = $this->getConfig( $folder );
 

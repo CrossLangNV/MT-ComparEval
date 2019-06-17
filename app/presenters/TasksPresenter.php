@@ -8,27 +8,27 @@ class TasksPresenter extends BasePresenter {
 
 	private $tasksModel;
 
-	private $experimentsModel;
+	private $testSetsModel;
 
 	private $metricsModel;
 
-	public function __construct( Tasks $tasksModel, Experiments $experimentsModel, Metrics $metricsModel ) {
+	public function __construct( Tasks $tasksModel, TestSets $testSetsModel, Metrics $metricsModel ) {
 		$this->tasksModel = $tasksModel;
-		$this->experimentsModel = $experimentsModel;
+		$this->testSetsModel = $testSetsModel;
 		$this->metricsModel = $metricsModel;
 	}
 
-	public function renderList( $experimentId ) {
-		$this->template->experimentId = $experimentId;
-		$this->template->experiment = $this->experimentsModel->getExperimentById( $experimentId );
+	public function renderList( $testSetId ) {
+		$this->template->testSetId = $testSetId;
+		$this->template->testSet = $this->testSetsModel->getTestSetById( $testSetId );
 	}
 
-	public function renderDownloadPValues( $experimentId, $metricName ) {
+	public function renderDownloadPValues( $testSetId, $metricName ) {
 		$output = fopen( "php://output", "w" ) or die( "Can't open php://output" );
 		header( "Content-Type:application/csv" );
 		header( "Content-Disposition:attachment;filename=p-values.csv" );
 
-		$tasks = $this->tasksModel->getTasks( $experimentId )->order( "id DESC" )->fetchAll();
+		$tasks = $this->tasksModel->getTasks( $testSetId )->order( "id DESC" )->fetchAll();
 		$header = array("Name");
 		foreach( $tasks as $task ) {
 			$header[] = $task->name;
@@ -65,14 +65,14 @@ class TasksPresenter extends BasePresenter {
 	}
 
 	public function renderCompare( $id1, $id2 ) {
-		$experimentId = $this->tasksModel->getTask( $id1 )->experiments_id;
-		$this->template->experimentId = $experimentId;
-		$this->template->experiment = $this->experimentsModel->getExperimentById( $experimentId );
+		$testSetId = $this->tasksModel->getTask( $id1 )->test_sets_id;
+		$this->template->testSetId = $testSetId;
+		$this->template->testSet = $this->testSetsModel->getTestSetById( $testSetId );
 		$this->template->taskIds = array( $id1, $id2 );
 	}
 
 	public function renderNew( $id ) {
-		$this->template->experiment = $this->experimentsModel->getExperimentById( $id );
+		$this->template->testSet = $this->testSetsModel->getTestSetById( $id );
 	}
 
 	public function actionEdit( $id ) {
@@ -87,17 +87,17 @@ class TasksPresenter extends BasePresenter {
 		$description = $data[ 'description' ];
 
 		$this->tasksModel->updateTask( $id, $name, $description );
-		$experimentId = $this->tasksModel->getTask( $id )->experiments_id;
+		$testSetId = $this->tasksModel->getTask( $id )->test_sets_id;
 
 		$this->flashMessage( 'Task was successfully updated.', 'alert-success' );
-		$this->redirect( 'list', $experimentId );
+		$this->redirect( 'list', $testSetId );
 	}
 
 	public function actionDelete( $taskId ) {
-		$experimentId = $this->tasksModel->getTask( $taskId )->experiments_id;
+		$testSetId = $this->tasksModel->getTask( $taskId )->test_sets_id;
 		$this->tasksModel->deleteTask( $taskId );
 
-		$this->redirect( 'list', $experimentId );
+		$this->redirect( 'list', $testSetId );
 	}
 
 	protected function createComponentEditForm() {

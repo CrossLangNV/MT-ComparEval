@@ -24,9 +24,9 @@ class Tasks {
 		return $metrics;
 	}
 
-	public function getTasks( $experimentId ) {
+	public function getTasks( $testSetId ) {
 		return $this->db->table( 'tasks' )
-			->where( 'experiments_id', $experimentId )
+			->where( 'test_sets_id', $testSetId )
 			->where( 'visible', 1 );
 	}
 
@@ -36,17 +36,17 @@ class Tasks {
 			->fetch();
 	}
 
-	public function getTaskByName( $taskName, $experimentId ) {
+	public function getTaskByName( $taskName, $testSetId ) {
 		return $this->db->table( 'tasks' )
 			->where( 'url_key', $taskName )
-			->where( 'experiments_id', $experimentId )
+			->where( 'test_sets_id', $testSetId )
 			->fetch();
 	}
 
 	public function saveTask( $data ) {
-		if ( !$row = $this->getTaskByName( $data[ 'url_key' ], $data[ 'experiments_id' ] ) ) {
+		// if ( !$row = $this->getTaskByName( $data[ 'url_key' ], $data[ 'test_sets_id' ] ) ) {
 			$row = $this->db->table( 'tasks' )->insert( $data );
-		}
+		// }
 
 		return $row->getPrimary( TRUE );
 	}
@@ -69,7 +69,7 @@ class Tasks {
 
 		foreach( $sentences as $key => $sentence ) {
 			$data = array(
-				'sentences_id' => $sentence['experiment']['id'],
+				'sentences_id' => $sentence['test_set']['id'],
 				'tasks_id' => $taskId,
 				'text' => $sentence['translation']
 			);
@@ -157,10 +157,10 @@ class Tasks {
 	public function deleteTask( $taskId, $deleteFromFileSystem = TRUE ) {
 		try {
 			$task = $this->getTaskById( $taskId );
-			$experiment = $task->experiment;
+			$testSet = $task->test_set;
 
 			if ( $task && $deleteFromFileSystem ) {
-				\Nette\Utils\FileSystem::delete( __DIR__ . '/../../data/' . $experiment[ 'url_key' ] . '/' . $task[ 'url_key' ] );
+				\Nette\Utils\FileSystem::delete( __DIR__ . '/../../data/' . $testSet[ 'url_key' ] . '/' . $task[ 'url_key' ] );
 			}
 
 			return $this->db->table( 'tasks' )
@@ -171,9 +171,9 @@ class Tasks {
 		}
 	}
 
-	public function deleteTaskByName( $experimentId, $name ) {
+	public function deleteTaskByName( $testSetId, $name ) {
 		$this->db->table( 'tasks' )
-			->where( 'experiments_id', $experimentId )
+			->where( 'test_sets_id', $testSetId )
 			->where( 'url_key', $name )
 			->delete();
 	}

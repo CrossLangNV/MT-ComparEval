@@ -11,10 +11,10 @@ class InitialPreprocessor implements Preprocessor {
 		$sentence[ 'meta' ] = array();
 
 		if( $isCaseSensitive ) {
-			$sentence[ 'meta' ][ 'reference' ] = $sentence[ 'experiment' ][ 'reference' ];
+			$sentence[ 'meta' ][ 'reference' ] = $sentence[ 'test_set' ][ 'reference' ];
 			$sentence[ 'meta' ][ 'translation' ] = $sentence[ 'translation' ];
 		} else {
-			$sentence[ 'meta' ][ 'reference' ] = mb_strtolower( $sentence[ 'experiment' ][ 'reference' ] );
+			$sentence[ 'meta' ][ 'reference' ] = mb_strtolower( $sentence[ 'test_set' ][ 'reference' ] );
 			$sentence[ 'meta' ][ 'translation' ] = mb_strtolower( $sentence[ 'translation' ] );
 		}
 

@@ -1,5 +1,5 @@
 {block title}
-<a class="brand" href="{plink Tasks:list $experimentId}"><small>{$experiment->name}</small></a>
+<a class="brand" href="{plink Tasks:list $testSetId}"><small>{$testSet->name}</small></a>
 {/block}
 
 {block styles}
@@ -550,7 +550,7 @@ function Sentences( $scope, $http ) {
 	function loadTasks() {
 		$http.get( '{!$basePath}/api/tasks', {
 			params: {
-				"experimentId": {!$experimentId},
+				"testSetId": {!$testSetId},
 			}
 		} ).success( addTasks );
 	}

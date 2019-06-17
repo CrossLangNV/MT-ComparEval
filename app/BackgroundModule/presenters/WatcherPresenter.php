@@ -11,12 +11,12 @@ class WatcherPresenter extends \Nette\Application\UI\Presenter {
 
 	public function renderWatch( $folder, $sleep = 500000 ) {
 		echo "Watcher is watching folder: $folder\n";
-		
+
 		while( TRUE ) {
 			usleep( $sleep );
 
-			foreach( $this->getUnimportedExperiments( $folder ) as $experiment ) {
-				$this->runImportForExperiment( $experiment );
+			foreach( $this->getUnimportedTestSets( $folder ) as $testSet ) {
+				$this->runImportForTestSet( $testSet );
 			}
 
 			foreach( $this->getUnimportedTasks( $folder ) as $task ) {
@@ -27,33 +27,33 @@ class WatcherPresenter extends \Nette\Application\UI\Presenter {
 		$this->terminate();
 	}
 
-	private function getUnimportedExperiments( $folder ) {
+	private function getUnimportedTestSets( $folder ) {
 		return \Nette\Utils\Finder::findDirectories( '*' )
 			->in( $folder )
-			->imported( FALSE )
-			->aborted( FALSE );	
-	}
-
-	private function getUnimportedTasks( $folder ) {
-		$importedExperiments = \Nette\Utils\Finder::findDirectories( '*' )
-			->in( $folder )
-			->imported( TRUE )
-			->toArray();
-
-		if( count( $importedExperiments ) == 0 ) {
-			return array();
-		}
-
-		return \Nette\Utils\Finder::findDirectories( '*' )
-			->in( $importedExperiments )
 			->imported( FALSE )
 			->aborted( FALSE );
 	}
 
-	private function runImportForExperiment( $experiment ) {
-		$action = "Background:Experiments:Import";		
+	private function getUnimportedTasks( $folder ) {
+		$importedTestSets = \Nette\Utils\Finder::findDirectories( '*' )
+			->in( $folder )
+			->imported( TRUE )
+			->toArray();
 
-		$this->runCommand( $action, $experiment );
+		if( count( $importedTestSets ) == 0 ) {
+			return array();
+		}
+
+		return \Nette\Utils\Finder::findDirectories( '*' )
+			->in( $importedTestSets )
+			->imported( FALSE )
+			->aborted( FALSE );
+	}
+
+	private function runImportForTestSet( $testSet ) {
+		$action = "Background:TestSets:Import";
+
+		$this->runCommand( $action, $testSet );
 	}
 
 	private function runImportForTask( $task ) {

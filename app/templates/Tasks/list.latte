@@ -55,7 +55,7 @@ $(document).ready( function() {
 		function loadTasks() {
 			var payload = {};
 			payload.params = {
-				"experimentId": {!$experimentId}
+				"testSetId": {!$testSetId}
 			};
 
 			$http.get( '{!$basePath}/api/tasks', payload )
@@ -64,7 +64,7 @@ $(document).ready( function() {
 					$scope.tasks = data.tasks;
 					$scope.showAdministration = data.show_administration;
 
-					return $http.get( '{!$basePath}/api/metrics/scores-in-experiment', payload );
+					return $http.get( '{!$basePath}/api/metrics/scores-in-test-set', payload );
 				} )
 				.then( function( response ) {
 					var data = response.data;
@@ -186,9 +186,9 @@ $(document).ready( function() {
 {/block}
 
 {block #content}
-<h1>{$experiment["name"]}</h1>
+<h1>{$testSet["name"]}</h1>
 
-<p>{$experiment["description"]}</p>
+<p>{$testSet["description"]}</p>
 
 <div ng-app="MT-ComparEval" ng-controller="Tasks">
 	<div ng-if="tasks.length > 0">
@@ -207,7 +207,7 @@ $(document).ready( function() {
 		<form>
 			<input type="submit" value="compare" class="btn btn-default compare" ng-if="tasks.length > 1" />
 			{if $showAdministration}
-				<a href="{plink Tasks:new $experimentId}" class="btn btn-default">New Task</a>
+				<a href="{plink Tasks:new $testSetId}" class="btn btn-default">New Task</a>
 			{/if}
 			<br><br>
 
@@ -244,9 +244,9 @@ $(document).ready( function() {
 
 			<input type="submit" value="compare" class="btn btn-default compare" ng-if="tasks.length > 1" />
 			{if $showAdministration}
-				<a href="{plink Tasks:new $experimentId}" class="btn btn-default">New Task</a>
+				<a href="{plink Tasks:new $testSetId}" class="btn btn-default">New Task</a>
 			{/if}
-			<a href="{plink Tasks:downloadPValues $experimentId, "BLEU"}" class="btn btn-default">Download BLEU p-values</a>
+			<a href="{plink Tasks:downloadPValues $testSetId, "BLEU"}" class="btn btn-default">Download BLEU p-values</a>
 
 			<div class="alert" ng-show="tasks.length <= 1">
 				You need to import at least 2 tasks to be able to compare them.
@@ -255,7 +255,7 @@ $(document).ready( function() {
 	</div>
 
 	<div class="alert" ng-show="tasks.length == 0">
-		There are no tasks in this experiment.
+		There are no tasks for this test set.
 	</div>
 </div>
 

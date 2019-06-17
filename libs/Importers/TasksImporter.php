@@ -12,15 +12,15 @@
  */
 class TasksImporter extends Importer {
 
-	private $experimentsModel;
+	private $testSetsModel;
 	private $ngramsModel;
 	private $tasksModel;
 	private $sampler;
 	private $preprocessor;
 	private $metrics;
 
-	public function __construct( Experiments $experimentsModel, Tasks $tasksModel, NGrams $ngramsModel, BootstrapSampler $sampler, Preprocessor $preprocessor, $metrics ) {
-		$this->experimentsModel = $experimentsModel;
+	public function __construct( TestSets $testSetsModel, Tasks $tasksModel, NGrams $ngramsModel, BootstrapSampler $sampler, Preprocessor $preprocessor, $metrics ) {
+		$this->testSetsModel = $testSetsModel;
 		$this->ngramsModel = $ngramsModel;
 		$this->tasksModel = $tasksModel;
 		$this->sampler = $sampler;
@@ -29,7 +29,7 @@ class TasksImporter extends Importer {
 	}
 
 	protected function logImportStart( $config ) {
-		$this->logger->log( "Importing task: {$config['experiment']['url_key']}:{$config['url_key']}" );
+		$this->logger->log( "Importing task: {$config['test_set']['url_key']}:{$config['url_key']}" );
 	}
 
 	protected function logImportSuccess( $config ) {
@@ -37,11 +37,13 @@ class TasksImporter extends Importer {
 	}
 
 	protected function processMetadata( $config ) {
+		exit;
 		$data = array(
 			'name' => $config['name'],
 			'description' => $config['description'],
 			'url_key' => $config['url_key'],
-			'experiments_id' => $config['experiment']['id'],
+			'test_sets_id' => $config['test_set']['id'],
+			'engines_id' => 1
 		);
 
 		return array( 'task_id' => $this->tasksModel->saveTask( $data ) );
@@ -76,7 +78,7 @@ class TasksImporter extends Importer {
 
 			foreach( $sentences as $sentence ) {
 				foreach( $metrics as $name => $metric ) {
-					$sentenceMetrics[ $name ][] = $metric->addSentence( $sentence['experiment']['reference'], $sentence['translation'], $sentence['meta'] );
+					$sentenceMetrics[ $name ][] = $metric->addSentence( $sentence['test_set']['reference'], $sentence['translation'], $sentence['meta'] );
 				}
 			}
 
@@ -100,14 +102,14 @@ class TasksImporter extends Importer {
 
 		if( $config[ 'precompute_ngrams' ] ) {
 			$this->logger->log( "Precomputing n-grams for {$config['url_key']}." );
-			$this->ngramsModel->precomputeNgrams( $config['experiment']['id'], $metadata['task_id'] );
+			$this->ngramsModel->precomputeNgrams( $config['test_set']['id'], $metadata['task_id'] );
 			$this->logger->log( "N-grams precomputation done." );
 		}
 	}
 
 	protected function parseResources( Folder $folder, $config ) {
 		$sentences = parent::parseResources( $folder, $config );
-		$sentences['experiment'] = $this->experimentsModel->getSentences( $config['experiment']['id'] );
+		$sentences['test_set'] = $this->testSetsModel->getSentences( $config['test_set']['id'] );
 
 		return $sentences;
 	}
@@ -120,7 +122,7 @@ class TasksImporter extends Importer {
 		return array(
 			'name' => $folder->getName(),
 			'url_key' => $folder->getName(),
-			'experiment' => $this->experimentsModel->getExperimentByName( $folder->getParent()->getName() ),
+			'test_set' => $this->testSetsModel->getTestSetByName( $folder->getParent()->getName() ),
 			'description' => '',
 			'translation' => 'translation.txt',
 			'precompute_ngrams' => true

@@ -1,0 +1,31 @@
+{block #content}
+<h1>Test sets</h1>
+
+{if count($testSets)}
+<table class="table table-bordered">
+{foreach $testSets->order( 'name' ) as $testSet}
+	<tr class="test-set" data-id="{$testSet['url_key']}">
+		<td class="name span3"><a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a></td>
+		<td class="description">{$testSet['description']}</td>
+		{if $showAdministration}
+		<td class="span2">
+			<div class="text-right">
+				<a href="{plink TestSets:edit $testSet['id']}">edit</a>
+				<a href="{plink TestSets:delete $testSet['id']}" onclick="return confirm('Do you really want to delete this? There is no way to undo this action')">delete</a>
+			</div>
+		</td>
+		{/if}
+	</tr>
+{/foreach}
+</table>
+{else}
+	<div class="alert">
+		There are no test sets.
+	</div>
+{/if}
+
+{if $showAdministration}
+	<a href="{plink TestSets:new}" class="btn btn-default">New Test Set</a>
+{/if}
+
+<a href="{plink TestSets:download}" class="btn btn-default">Download statistics</a>

@@ -36,7 +36,7 @@ class MetricsPresenter extends \Nette\Application\UI\Presenter {
 	}
 
 
-	public function renderScoresInExperiment( $experimentId ) {
+	public function renderScoresInTestSet( $testSetId ) {
 		$tasks = array();
 		$metrics = array();
 
@@ -47,7 +47,7 @@ class MetricsPresenter extends \Nette\Application\UI\Presenter {
 			);
 		}
 
-		foreach( $this->tasksModel->getTasks( $experimentId ) as $task ) {
+		foreach( $this->tasksModel->getTasks( $testSetId ) as $task ) {
 			$tasks[ $task->id ] = $task->name;
 
 			foreach( $this->tasksModel->getTaskMetrics( $task ) as $name => $score ) {

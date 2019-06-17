@@ -3,19 +3,22 @@
 use \Nette\Application\UI\Form;
 use \Nette\Forms\Controls;
 
+class TestSetsPresenter extends BasePresenter {
 
-class ExperimentsPresenter extends BasePresenter {
-
-	private $experimentsModel;
+	private $testSetsModel;
 	private $tasksModel;
+	private $languagePairsModel;
+	private $enginesModel;
 
-	public function __construct( Experiments $experimentsModel, Tasks $tasksModel ) {
-		$this->experimentsModel = $experimentsModel;
+	public function __construct(Tasks $tasksModel, TestSets $testSetsModel, LanguagePairs $languagePairsModel, Engines $enginesModel) {
+		$this->testSetsModel = $testSetsModel;
 		$this->tasksModel = $tasksModel;
+		$this->languagePairsModel = $languagePairsModel;
+		$this->enginesModel = $enginesModel;
 	}
 
 	public function renderList() {
-		$this->template->experiments = $this->experimentsModel->getExperiments();
+		$this->template->testSets = $this->testSetsModel->getTestSets();
 	}
 
 	public function renderDownload() {
@@ -24,10 +27,10 @@ class ExperimentsPresenter extends BasePresenter {
 		header( "Content-Disposition:attachment;filename=statistics.csv" );
 
 		$metricNames = array();
-		foreach( $this->experimentsModel->getExperiments() as $experiment ) {
-			foreach( $this->tasksModel->getTasks( $experiment->id ) as $task ) {
+		foreach( $this->testSetsModel->getTestSets() as $testSet ) {
+			foreach( $this->tasksModel->getTasks( $testSet->id ) as $task ) {
 				$row = array();
-				$row[] = $experiment->name;
+				$row[] = $testSet->name;
 				$row[] = $task->name;
 				$row[] = $task->description;
 
@@ -44,7 +47,7 @@ class ExperimentsPresenter extends BasePresenter {
 			}
 		}
 
-		$header = array( "Experiment", "Task", "Description" );
+		$header = array( "TestSet", "Task", "Description" );
 		$header = array_merge( $header, $metricNames );
 		fputcsv( $output, $header );
 
@@ -57,7 +60,7 @@ class ExperimentsPresenter extends BasePresenter {
 	}
 
 	public function actionEdit( $id ) {
-		$data = $this->experimentsModel->getExperimentById( $id );
+		$data = $this->testSetsModel->getTestSetById( $id );
 		$this->getComponent( 'editForm' )->setDefaults( $data );
 	}
 
@@ -67,14 +70,14 @@ class ExperimentsPresenter extends BasePresenter {
 		$name = $data[ 'name' ];
 		$description = $data[ 'description' ];
 
-		$this->experimentsModel->updateExperiment( $id, $name, $description );
+		$this->testSetsModel->updateTestSet( $id, $name, $description );
 
-		$this->flashMessage( 'Experiment was successfully updated.', 'alert-success' );
+		$this->flashMessage( 'Test set was successfully updated.', 'alert-success' );
 		$this->redirect( 'list' );
 	}
 
 	public function actionDelete( $id ) {
-		$this->experimentsModel->deleteExperiment( $id );
+		$this->testSetsModel->deleteTestSet( $id );
 
 		$this->redirect( 'list' );
 	}
@@ -82,9 +85,9 @@ class ExperimentsPresenter extends BasePresenter {
 	protected function createComponentEditForm() {
 		$form = new Form( $this, 'editForm' );
 		$form->addText( 'name', 'Name' )
-			->addRule( Form::FILLED, 'Please, fill in a name of the experiment.' );
+			->addRule( Form::FILLED, 'Please, fill in a name of the test set.' );
 		$form->addTextArea( 'description', 'Description' )
-			->addRule( Form::FILLED, 'Please, fill in a description of the experiment.' );
+			->addRule( Form::FILLED, 'Please, fill in a description of the test set.' );
 		$form->addHidden( 'id' );
 		$form->addSubmit('save', 'Save');
 		$form->onSubmit[] = array( $this, 'saveEditForm' );
@@ -114,5 +117,31 @@ class ExperimentsPresenter extends BasePresenter {
 			}
 		}
 
+	}
+
+	public function renderMatrix() {
+		$this->template->languagePairs = $this->languagePairsModel->getLanguagePairs();
+		$testSets = $this->testSetsModel->getTestSets();
+		$engines = $this->enginesModel->getEngines();
+
+		$tableData = array();
+
+		foreach ($testSets as $testSetIndex => $testSet) {
+			$tasks = $this->tasksModel->getTasks($testSet['id']);
+			foreach ($engines as $engineIndex => $engine) {
+				foreach ($tasks as $taskIndex => $task) {
+					if ($engine['id'] == $task['engines_id']) {
+						$tableData[$testSet['id']][$engineIndex] = $task['name'];
+					}
+				}
+				if ($tableData[$testSet['id']][$engineIndex] == null) {
+					$tableData[$testSet['id']][$engineIndex] = 0;
+				}
+			}
+		}
+
+		$this->template->engines = $this->enginesModel->getEngines();
+		$this->template->testSets = $this->testSetsModel->getTestSets();
+		$this->template->tableData = $tableData;
 	}
 }
