@@ -59,4 +59,27 @@ class TestSetsPresenter extends BasePresenter {
 		$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
 	}
 
+	public function renderCreateLanguagePair() {
+		$sourceLanguage = $this->getPostParameter( 'sourceLanguage' );
+		$targetLanguage = $this->getPostParameter( 'targetLanguage' );
+		$url_key = \Nette\Utils\Strings::webalize( $sourceLanguage . "-" . $targetLanguage );
+
+		$data = array(
+			'sourceLanguage' => $sourceLanguage,
+			'targetLanguage' => $targetLanguage,
+			'url_key' => $url_key
+		);
+
+		exit();
+
+		// call the model create method here
+
+		if ( $this->getPostParameter( 'redirect', False ) ) {
+			$this->flashMessage( "The language pair was created successfully. It will appear in this list once it is imported.", "success" );
+			$this->redirect( ":TestSets:matrix" );
+		} else {
+			$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
+		}
+	}
+
 }
