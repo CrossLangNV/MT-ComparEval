@@ -1,53 +1,58 @@
 {block #content}
-<h1>Matrix view</h1>
+<h1>Overview</h1>
 
 {if count($languagePairs)}
   {foreach $languagePairs->order( 'url_key' ) as $languagePair}
     <h2>{$languagePair['source_language']}-{$languagePair['target_language']}</h2>
-    {if count($engines)}
-      <table class="table table-bordered">
-        <tr>
-          <td></td>
+    <table class="table table-bordered">
+      <tr>
+        <td></td>
+        {if count($engines)}
           {foreach $engines as $engine}
             {if $engine['language_pairs_id'] == $languagePair['id']}
               <th>{$engine['name']}</th>
             {/if}
           {/foreach}
-          <td>
-            <a href="{plink TestSets:createLanguagePair}" class="btn btn-default">Add Engine</a>
-          </td>
-        </tr>
-        {if count($testSets)}
-          {foreach $testSets as $testSet}
-            {if $testSet['language_pairs_id'] == $languagePair['id']}
-              <tr>
-                <th>
-                  <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
-                </th>
-                {foreach $engines as $engine}
-                  {if $tableData[$testSet['id']][$iterator->counter] == "0"}
+        {/if}
+        <td>
+          <a href="{plink TestSets:engine $languagePair['id']}" class="btn btn-default">Add Engine</a>
+        </td>
+      </tr>
+      {if count($testSets)}
+        {foreach $testSets as $testSet}
+          {if $testSet['language_pairs_id'] == $languagePair['id']}
+            <tr>
+              <th>
+                <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+              </th>
+              {foreach $engines as $engine}
+                {if $engine['language_pairs_id'] == $languagePair['id']}
+                  {if $tableData[$languagePair['id']][$testSet['id']][$engine['id']] == "0"}
                     <td>
                       <a href="{plink Tasks:new $testSet['id']}" class="btn btn-default">Add Task</a>
                     </td>
                   {else}
-                    <td>{$tableData[$testSet['id']][$iterator->counter]}</td>
+                    <td>{$tableData[$languagePair['id']][$testSet['id']][$engine['id']]}</td>
                   {/if}
-                {/foreach}
-                <td></td>
-              </tr>
-            {/if}
-          {/foreach}
-        {/if}
-        <tr>
-          <td>
-            <a href="{plink TestSets:createLanguagePair}" class="btn btn-default">Add Test Set</a>
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
-    {/if}
+                {/if}
+              {/foreach}
+              <td></td>
+            </tr>
+          {/if}
+        {/foreach}
+      {/if}
+      <tr>
+        <td>
+          <a href="{plink TestSets:new $languagePair['id']}" class="btn btn-default">Add Test Set</a>
+        </td>
+        {foreach $engines as $engine}
+          {if $engine['language_pairs_id'] == $languagePair['id']}
+            <td></td>
+          {/if}
+        {/foreach}
+        <td></td>
+      </tr>
+    </table>
   {/foreach}
 {else}
   <div class="alert">
@@ -56,7 +61,8 @@
 {/if}
 
 {if $showAdministration}
-  <a href="{plink Api:TestSets:createLanguagePair}" class="btn btn-default">Add Language Pair</a>
+  <a href="{plink TestSets:lp}" class="btn btn-default">Add Language Pair</a>
 {/if}
+
 
 

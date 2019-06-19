@@ -7,7 +7,6 @@ CREATE TABLE "language_pairs" (
   UNIQUE("source_language","target_language")
 );
 
-INSERT INTO `language_pairs` (`id`, `source_language`, `target_language`, `url_key`, `visible`) VALUES (1, 'en', 'nl', 'en-nl', 1);
 
 CREATE TABLE "test_sets" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -15,8 +14,10 @@ CREATE TABLE "test_sets" (
   "name" text NOT NULL,
   "url_key" text NOT NULL UNIQUE,
   "description" text NOT NULL,
-  "visible" integer(0) NULL
+  "visible" integer(0) NULL,
+  UNIQUE("name","language_pairs_id")
 );
+
 
 CREATE TABLE "sentences" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -26,16 +27,16 @@ CREATE TABLE "sentences" (
   FOREIGN KEY ("test_sets_id") REFERENCES "test_sets" ("id") ON DELETE CASCADE
 );
 
+
 CREATE TABLE "engines" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "language_pairs_id" integer NOT NULL,
   "name" text NOT NULL,
   "url_key" text NOT NULL UNIQUE,
-  "visible" integer(0) NULL
+  "visible" integer(0) NULL,
+  UNIQUE("language_pairs_id","name")
 );
 
-INSERT INTO `engines` (`id`, `language_pairs_id`, `name`, `url_key`, `visible`) VALUES (1, 1, 'heavyCrow', 'heavyCrow-en-nl', 1);
-INSERT INTO `engines` (`id`, `language_pairs_id`, `name`, `url_key`, `visible`) VALUES (2, 1, 'splendidWeasle', 'splendidWeasle-en-nl', 1);
 
 CREATE TABLE "tasks" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +49,7 @@ CREATE TABLE "tasks" (
   FOREIGN KEY ("engines_id") REFERENCES "engines" ("id") ON DELETE CASCADE,
   UNIQUE("test_sets_id","engines_id")
 );
+
 
 CREATE TABLE "translations" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -63,6 +65,7 @@ CREATE TABLE "metrics" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "name" text NOT NULL
 );
+
 
 INSERT INTO `metrics` (`id`, `name`) VALUES (0, 'BREVITY-PENALTY');
 INSERT INTO `metrics` (`id`, `name`) VALUES (1, 'BLEU-cased');
@@ -84,6 +87,7 @@ INSERT INTO `metrics` (`id`, `name`) VALUES (16, 'H-OMISSION');
 INSERT INTO `metrics` (`id`, `name`) VALUES (17, 'H-FORM-cased');
 INSERT INTO `metrics` (`id`, `name`) VALUES (18, 'H-FORM');
 INSERT INTO `metrics` (`id`, `name`) VALUES (19, 'TER');
+
 
 CREATE TABLE "translations_metrics" (
   "translations_id" integer NOT NULL,

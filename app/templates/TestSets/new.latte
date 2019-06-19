@@ -1,20 +1,11 @@
 {block #content}
-<h1>New Test Set</h1>
+<h1 style="margin-bottom:50px;">New Test Set for Language Pair {$languagePair['url_key']}</h1>
 
 <form class="form-horizontal" method="POST" action="{plink Api:TestSets:upload}" enctype="multipart/form-data">
 	<div class="control-group">
 		<label class="control-label" for="name">Name</label>
 		<div class="controls">
 			<input type="text" id="name" name="name" class="input-block-level">
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label" for="language_pairs_id">Language Pair</label>
-		<div class="controls">
-			<select id="language_pairs_id" name="language_pairs_id" class="input-block-level">
-			  <option value="0">en-nl</option>
-			  <option value="1">fr-ru</option>
-			</select>
 		</div>
 	</div>
 	<div class="control-group">
@@ -38,6 +29,7 @@
 	<div class="control-group">
 		<div class="controls">
 			<button type="submit" class="btn">Save</button>
+			<input type="hidden" name="language-pairs-id" value="{$languagePair['id']}" />
 			<input type="hidden" name="redirect" value="new" />
 		</div>
 	</div>

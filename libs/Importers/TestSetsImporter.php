@@ -32,7 +32,7 @@ class TestSetsImporter extends Importer {
 			'name' => $config['name'],
 			'description' => $config['description'],
 			'url_key' => $config['url_key'],
-			'language_pairs_id' => 1
+			'language_pairs_id' => $config['language_pairs_id'],
 		);
 
 		return array( 'test_set_id' => $this->testSetsModel->saveTestSet( $data ) );

@@ -1,0 +1,18 @@
+{block #content}
+<h1 style="margin-bottom:50px;">New Engine for Language Pair {$languagePair['url_key']}</h1>
+
+<form class="form-horizontal" method="POST" action="{plink Api:TestSets:addEngine}" enctype="multipart/form-data">
+	<div class="control-group">
+		<label class="control-label" for="source-name">Name</label>
+		<div class="controls">
+			<input type="text" id="name" name="name" class="input-block-level">
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">Save</button>
+			<input type="hidden" name="language-pairs-id" value="{$languagePair['id']}"} />
+			<input type="hidden" name="redirect" value="new" />
+		</div>
+	</div>
+</form>

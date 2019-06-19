@@ -29,7 +29,6 @@ class RouterFactory
 		} else {
 			$router[] = new Route('index.php', 'TestSets:matrix', Route::ONE_WAY);
 			$router[] = new Route('matrix', 'TestSets:matrix');
-			$router[] = new Route('list', 'TestSets:list');
 			$router[] = new Route('api/sentences', 'Api:Sentences:default');
 			$router[] = new Route('api/sentences/by-id', 'Api:Sentences:byId');
 			$router[] = new Route('api/tasks', 'Api:Tasks:default');
@@ -38,6 +37,7 @@ class RouterFactory
 			$router[] = new Route('api/testsets/status/<id>', 'Api:TestSets:status');
 			$router[] = new Route('api/testsets/delete/<id>', 'Api:TestSets:delete');
 			$router[] = new Route('api/language-pair/new', 'Api:TestSets:createLanguagePair');
+			$router[] = new Route('api/engine/new', 'Api:TestSets:addEngine');
 			$router[] = new Route('api/metrics', 'Api:Metrics:default');
 			$router[] = new Route('api/metrics/scores', 'Api:Metrics:scores');
 			$router[] = new Route('api/metrics/scores-in-test-set', 'Api:Metrics:scoresInTestSet');

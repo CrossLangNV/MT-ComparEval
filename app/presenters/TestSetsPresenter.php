@@ -120,28 +120,43 @@ class TestSetsPresenter extends BasePresenter {
 	}
 
 	public function renderMatrix() {
-		$this->template->languagePairs = $this->languagePairsModel->getLanguagePairs();
+		$languagePairs = $this->languagePairsModel->getLanguagePairs();
+		$this->template->languagePairs = $languagePairs;
 		$testSets = $this->testSetsModel->getTestSets();
 		$engines = $this->enginesModel->getEngines();
 
 		$tableData = array();
 
-		foreach ($testSets as $testSetIndex => $testSet) {
-			$tasks = $this->tasksModel->getTasks($testSet['id']);
-			foreach ($engines as $engineIndex => $engine) {
-				foreach ($tasks as $taskIndex => $task) {
-					if ($engine['id'] == $task['engines_id']) {
-						$tableData[$testSet['id']][$engineIndex] = $task['name'];
+		foreach ($languagePairs as $languagePairIndex => $languagePair) {
+			$languagePairData = array();
+			foreach ($testSets as $testSetIndex => $testSet) {
+				$tasks = $this->tasksModel->getTasks($testSet['id']);
+				foreach ($engines as $engineIndex => $engine) {
+					if ($engine['language_pairs_id'] == $languagePair['id']) {
+						foreach ($tasks as $taskIndex => $task) {
+							if ($engine['id'] == $task['engines_id']) {
+								$languagePairData[$testSet['id']][$engine['id']] = $task['name'];
+							}
+						}
+						if ($languagePairData[$testSet['id']][$engineIndex] == null) {
+							$languagePairData[$testSet['id']][$engine['id']] = 0;
+						}
 					}
 				}
-				if ($tableData[$testSet['id']][$engineIndex] == null) {
-					$tableData[$testSet['id']][$engineIndex] = 0;
-				}
 			}
+			$tableData[$languagePair['id']] = $languagePairData;
 		}
 
 		$this->template->engines = $this->enginesModel->getEngines();
 		$this->template->testSets = $this->testSetsModel->getTestSets();
 		$this->template->tableData = $tableData;
+	}
+
+	public function renderEngine( $languagePairId ) {
+		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
+	}
+
+	public function renderNew( $languagePairId ) {
+		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
 	}
 }
