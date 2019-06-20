@@ -19,7 +19,11 @@ function Sentences( $scope, $http ) {
 	$scope.task{$i} = {!$id};
 	{/foreach}
 	$scope.tasks = [];
-	$scope.taskNames = {};
+	$scope.taskUrlKeys
+
+
+
+ = {};
 	$scope.metrics = [];
 
 	$scope.sentences = [];
@@ -163,7 +167,15 @@ function Sentences( $scope, $http ) {
 				},
 				"yAxis": {
 					"title": {
-						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskNames[ $scope.task0] + " - " + $scope.taskNames[ $scope.task1 ] + ")",
+						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+
+
+
+[ $scope.task0] + " - " + $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ] + ")",
 					}
 				},
 				"xAxis": {
@@ -198,12 +210,20 @@ function Sentences( $scope, $http ) {
 				},
 				"series": [
 					{
-						"name": $scope.taskNames[ $scope.task0 ] + " wins",
+						"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + " wins",
 						"data": data.diffs.data,
 						"color": "#468847"
 					},
 					{
-						"name": $scope.taskNames[ $scope.task0 ] + " loses",
+						"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + " loses",
 						"data": [],
 						"color": "#b94a48"
 					}
@@ -245,11 +265,27 @@ function Sentences( $scope, $http ) {
 					"text": "Paired Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " differences",
 				},
 				"subtitle": {
-					"text": $scope.taskNames[ $scope.task0 ] + " is " + isBetter + " than " + $scope.taskNames[ $scope.task1 ] + ": " + significant,
+					"text": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + " is " + isBetter + " than " + $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ] + ": " + significant,
 				},
 				"yAxis": {
 					"title": {
-						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskNames[ $scope.task0] + " - " + $scope.taskNames[ $scope.task1 ] + ")",
+						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+
+
+
+[ $scope.task0] + " - " + $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ] + ")",
 					}
 				},
 				"xAxis": {
@@ -292,12 +328,20 @@ function Sentences( $scope, $http ) {
 
 				"series": [
 					{
-						"name": $scope.taskNames[ $scope.task0 ] + " wins",
+						"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + " wins",
 						"data": data.samples.data,
 						"color": "#468847"
 					},
 					{
-						"name": $scope.taskNames[ $scope.task0 ] + " loses",
+						"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + " loses",
 						"data": [],
 						"color": "#b94a48"
 					}
@@ -316,14 +360,22 @@ function Sentences( $scope, $http ) {
 					"zoomType": "x"
 				},
 				"title": {
-					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskNames[ $scope.task0 ]
+					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ]
 				},
 				"subtitle": {
 					"text": ( $scope.currentMetric || 'BLEU' ) + " lies in 95% confidence interval: [" + first + ", " + last + "]",
 				},
 				"yAxis": {
 					"title": {
-						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskNames[ $scope.task0 ] + ")",
+						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + ")",
 					}
 				},
 				"xAxis": {
@@ -376,7 +428,11 @@ function Sentences( $scope, $http ) {
 
 				"series": [
 					{
-						"name": $scope.taskNames[ $scope.task0 ] + " wins",
+						"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ] + " wins",
 						"data": data.samples.data,
 						"color": "#c09853",
 					}
@@ -395,14 +451,22 @@ function Sentences( $scope, $http ) {
 					"zoomType": "x"
 				},
 				"title": {
-					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskNames[ $scope.task1 ]
+					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ]
 				},
 				"subtitle": {
 					"text": ( $scope.currentMetric || 'BLEU' ) + " lies in 95% confidence interval: [" + first + ", " + last + "]",
 				},
 				"yAxis": {
 					"title": {
-						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskNames[ $scope.task1 ] + ")",
+						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ] + ")",
 					}
 				},
 				"xAxis": {
@@ -455,7 +519,11 @@ function Sentences( $scope, $http ) {
 
 				"series": [
 					{
-						"name": $scope.taskNames[ $scope.task1 ] + " wins",
+						"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ] + " wins",
 						"data": data.samples.data,
 						"color": "#3a87ad",
 					}
@@ -530,13 +598,21 @@ function Sentences( $scope, $http ) {
 					}
 				},
 				"series": [ {
-					"name": $scope.taskNames[ $scope.task0 ],
+					"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task0 ],
 					"data": task1Metrics,
 					"dataLabels": {
 						"align": "left",
 					}
 				},{
-					"name": $scope.taskNames[ $scope.task1 ],
+					"name": $scope.taskUrlKeys
+
+
+
+[ $scope.task1 ],
 					"data": task2Metrics,
 					"dataLabels": {
 						"align": "right",
@@ -557,7 +633,11 @@ function Sentences( $scope, $http ) {
 
 	function addTasks( data ) {
 		for ( taskId in data.tasks ) {
-			$scope.taskNames[ taskId ] = data.tasks[ taskId ].name;
+			$scope.taskUrlKeys
+
+
+
+[ taskId ] = data.tasks[ taskId ].url_key;
 			$scope.tasks.push( data.tasks[ taskId ] );
 		}
 	}
@@ -850,8 +930,16 @@ function Sentences( $scope, $http ) {
 					<table class="table table-bordered table-condensed">
 						<tr>
 							<th class="span2">Metric</th>
-							<th class="span2" style="text-align: center">{{ taskNames[ task0 ] }}</th>
-							<th class="span2" style="text-align: center">{{ taskNames[ task1 ] }}</th>
+							<th class="span2" style="text-align: center">{{ taskUrlKeys
+
+
+
+[ task0 ] }}</th>
+							<th class="span2" style="text-align: center">{{ taskUrlKeys
+
+
+
+[ task1 ] }}</th>
 						</tr>
 
 						<tr ng-repeat="metric in metrics">
@@ -895,7 +983,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskNames[ task ] }} wins</caption>
+									<caption>{{ taskUrlKeys
+
+
+
+[ task ] }} wins</caption>
 									<tr ng-repeat="ngram in confirmedNgrams[ task ][ length ].slice(0,10)">
 										<td style="font-size: 0.9em">
 											<a ng-click="loadSentencesWithNgram( ngram.text, 'improving', task, ngram.sentences )">
@@ -916,7 +1008,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskNames[ task ] }} wins</caption>
+									<caption>{{ taskUrlKeys
+
+
+
+[ task ] }} wins</caption>
 									<tr ng-repeat="ngram in confirmedNgrams[ task ][ length ].slice(0,10)">
 										<td style="font-size: 0.9em">
 											<a ng-click="loadSentencesWithNgram( ngram.text, 'improving', task, ngram.sentences )">
@@ -954,7 +1050,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskNames[ task ] }} loses</caption>
+									<caption>{{ taskUrlKeys
+
+
+
+[ task ] }} loses</caption>
 									<tr ng-repeat="ngram in unconfirmedNgrams[ task ][ length ].slice(0,10)">
 										<td style="font-size: 0.9em">
 											<a ng-click="loadSentencesWithNgram( ngram.text, 'worsening', task, ngram.sentences )">
@@ -975,7 +1075,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskNames[ task ] }} loses</caption>
+									<caption>{{ taskUrlKeys
+
+
+
+[ task ] }} loses</caption>
 									<tr ng-repeat="ngram in unconfirmedNgrams[ task ][ length ].slice(0,10)">
 										<td style="font-size: 0.9em">
 											<a ng-click="loadSentencesWithNgram( ngram.text, 'worsening', task, ngram.sentences )">
@@ -1037,11 +1141,19 @@ function Sentences( $scope, $http ) {
 
 							<label class="radio">
 								<input ng-model="showDiffFor" value="0" type="radio" name="show-diff-for" />
-								Show diff for {{ taskNames[ task0 ] }}
+								Show diff for {{ taskUrlKeys
+
+
+
+[ task0 ] }}
 							</label>
 							<label class="radio">
 								<input ng-model="showDiffFor" value="1" type="radio" name="show-diff-for" />
-								Show diff for {{ taskNames[ task1 ] }}
+								Show diff for {{ taskUrlKeys
+
+
+
+[ task1 ] }}
 							</label>
 
 							</label>
@@ -1070,12 +1182,20 @@ function Sentences( $scope, $http ) {
 
 							<label class="checkbox">
 								<input type="checkbox" ng-model="showTask0" />
-								Show {{ taskNames[ task0 ] }}
+								Show {{ taskUrlKeys
+
+
+
+[ task0 ] }}
 							</label>
 
 							<label class="checkbox">
 								<input type="checkbox" ng-model="showTask1" />
-								Show {{ taskNames[ task1 ] }}
+								Show {{ taskUrlKeys
+
+
+
+[ task1 ] }}
 							</label>
 
 							<label class="checkbox">
@@ -1115,7 +1235,11 @@ function Sentences( $scope, $http ) {
 					class="translation"
 					ng-show="( translation.task_id == task0 && showTask0 ) || ( translation.task_id == task1 && showTask1 )"
 				>
-					<th>{{ taskNames[ translation.task_id ] }}</th>
+					<th>{{ taskUrlKeys
+
+
+
+[ translation.task_id ] }}</th>
 					<td class="text">
 						<span
 							ng-repeat="token in translation.tokens"
@@ -1151,7 +1275,11 @@ function Sentences( $scope, $http ) {
 							<tr
 								ng-repeat="translation in sentence.translations| orderBy:'+task_id':(task0>task1)"
 							>
-								<th>{{ taskNames[ translation.task_id ] }}</th>
+								<th>{{ taskUrlKeys
+
+
+
+[ translation.task_id ] }}</th>
 								<td
 									ng-repeat="metric in metrics"
 									ng-class="{'active-metric': metric == currentMetric}"

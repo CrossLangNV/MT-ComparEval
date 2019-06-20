@@ -36,25 +36,24 @@ class Tasks {
 			->fetch();
 	}
 
-	public function getTaskByName( $taskName, $testSetId ) {
+	public function getTaskByUrlKey( $taskUrlKey ) {
 		return $this->db->table( 'tasks' )
-			->where( 'url_key', $taskName )
-			->where( 'test_sets_id', $testSetId )
+			->where( 'url_key', $taskUrlKey )
 			->fetch();
 	}
 
 	public function saveTask( $data ) {
-		// if ( !$row = $this->getTaskByName( $data[ 'url_key' ], $data[ 'test_sets_id' ] ) ) {
+		if ( !$row = $this->getTaskByUrlKey( $data[ 'url_key' ] ) ) {
 			$row = $this->db->table( 'tasks' )->insert( $data );
-		// }
+		}
 
 		return $row->getPrimary( TRUE );
 	}
 
-	public function updateTask( $taskId, $name, $description ) {
+	public function updateTask( $taskId, $description ) {
 		$this->db->table( 'tasks' )
 			->get( $taskId )
-			->update( array( 'name' => $name, 'description' => $description ) );
+			->update( array('description' => $description ) );
 
 	}
 
@@ -171,10 +170,9 @@ class Tasks {
 		}
 	}
 
-	public function deleteTaskByName( $testSetId, $name ) {
+	public function deleteTaskByUrlKey( $urlKey ) {
 		$this->db->table( 'tasks' )
-			->where( 'test_sets_id', $testSetId )
-			->where( 'url_key', $name )
+			->where( 'url_key', $urlKey )
 			->delete();
 	}
 

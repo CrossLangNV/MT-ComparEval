@@ -37,13 +37,11 @@ class TasksImporter extends Importer {
 	}
 
 	protected function processMetadata( $config ) {
-		exit;
 		$data = array(
-			'name' => $config['name'],
 			'description' => $config['description'],
-			'url_key' => $config['url_key'],
-			'test_sets_id' => $config['test_set']['id'],
-			'engines_id' => 1
+			'test_sets_id' => $config['test_sets_id'],
+			'engines_id' => $config['engines_id'],
+			'url_key' => $config['test_sets_id'] . "-" . $config['engines_id']
 		);
 
 		return array( 'task_id' => $this->tasksModel->saveTask( $data ) );
@@ -120,7 +118,6 @@ class TasksImporter extends Importer {
 
 	protected function getDefaults( Folder $folder ) {
 		return array(
-			'name' => $folder->getName(),
 			'url_key' => $folder->getName(),
 			'test_set' => $this->testSetsModel->getTestSetByName( $folder->getParent()->getName() ),
 			'description' => '',

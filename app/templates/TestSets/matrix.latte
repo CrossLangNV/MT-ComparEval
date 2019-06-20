@@ -29,7 +29,7 @@
                 {if $engine['language_pairs_id'] == $languagePair['id']}
                   {if $tableData[$languagePair['id']][$testSet['id']][$engine['id']] == "0"}
                     <td>
-                      <a href="{plink Tasks:new $testSet['id']}" class="btn btn-default">Add Task</a>
+                      <a href="{plink Tasks:new $testSet['id'], $engine['id']}" class="btn btn-default">Add Task</a>
                     </td>
                   {else}
                     <td>{$tableData[$languagePair['id']][$testSet['id']][$engine['id']]}</td>

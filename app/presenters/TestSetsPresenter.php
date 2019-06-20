@@ -31,7 +31,7 @@ class TestSetsPresenter extends BasePresenter {
 			foreach( $this->tasksModel->getTasks( $testSet->id ) as $task ) {
 				$row = array();
 				$row[] = $testSet->name;
-				$row[] = $task->name;
+				$row[] = $task->engines_id;
 				$row[] = $task->description;
 
 				$metrics = $this->tasksModel->getTaskMetrics( $task->id );
@@ -135,7 +135,7 @@ class TestSetsPresenter extends BasePresenter {
 					if ($engine['language_pairs_id'] == $languagePair['id']) {
 						foreach ($tasks as $taskIndex => $task) {
 							if ($engine['id'] == $task['engines_id']) {
-								$languagePairData[$testSet['id']][$engine['id']] = $task['name'];
+								$languagePairData[$testSet['id']][$engine['id']] = $task['description'];
 							}
 						}
 						if ($languagePairData[$testSet['id']][$engineIndex] == null) {

@@ -24,7 +24,7 @@ class TasksPresenter extends BasePresenter {
 		$response[ 'tasks' ] = array();
 		foreach( $this->tasksModel->getTasks( $testSetId ) as $task ) {
 			$taskResponse[ 'id' ] = $task->id;
-			$taskResponse[ 'name' ] = $task->name;
+			$taskResponse[ 'url_key' ] = $task->url_key;
 			$taskResponse[ 'description' ] = $task->description;
 			if( $show_administration ) {
 				$taskResponse[ 'edit_link' ] = $this->link( ':Tasks:edit', $task->id );
@@ -40,25 +40,23 @@ class TasksPresenter extends BasePresenter {
 	}
 
 	public function renderUpload() {
-		$name = $this->getPostParameter( 'name' );
-		$url_key = \Nette\Utils\Strings::webalize( $name );
-		$description = $this->getPostParameter( 'description' );
 		$test_set_id = $this->getPostParameter( 'test_set_id' );
+		$engine_id = $this->getPostParameter( 'engine_id' );
+		$url_key = \Nette\Utils\Strings::webalize( $test_set_id . "-" . $engine_id );
+		$description = $this->getPostParameter( 'description' );
 		$translation = $this->getPostFile( 'translation' );
-		$engines_id = $this->getPostParameter( 'engines_id' );
 
 		$data = array(
-			'name' => $name,
 			'description' => $description,
 			'url_key' => $url_key,
 			'test_sets_id' => $test_set_id,
-			'engines_id' => $engines_id
+			'engines_id' => $engine_id
 		);
 
 		$testSet = $this->testSetsModel->getTestSetById( $test_set_id );
 		$path = __DIR__ . '/../../../data/' . $testSet->url_key . '/' . $url_key . '/';
 		$translation->move( $path . 'translation.txt' );
-		file_put_contents( $path . 'config.neon', "name: $name\ndescription: $description\nurl_key: $url_key" );
+		file_put_contents( $path . 'config.neon', "description: $description\nurl_key: $url_key\ntest_sets_id: $test_set_id\nengines_id: $engine_id" );
 
 		$response = array( 'task_id' => $this->tasksModel->saveTask( $data ) );
 

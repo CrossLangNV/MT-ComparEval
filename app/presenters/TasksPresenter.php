@@ -7,15 +7,15 @@ use \Nette\Forms\Controls;
 class TasksPresenter extends BasePresenter {
 
 	private $tasksModel;
-
 	private $testSetsModel;
-
 	private $metricsModel;
+	private $enginesModel;
 
-	public function __construct( Tasks $tasksModel, TestSets $testSetsModel, Metrics $metricsModel ) {
+	public function __construct( Tasks $tasksModel, TestSets $testSetsModel, Metrics $metricsModel, Engines $enginesModel ) {
 		$this->tasksModel = $tasksModel;
 		$this->testSetsModel = $testSetsModel;
 		$this->metricsModel = $metricsModel;
+		$this->enginesModel = $enginesModel;
 	}
 
 	public function renderList( $testSetId ) {
@@ -29,15 +29,15 @@ class TasksPresenter extends BasePresenter {
 		header( "Content-Disposition:attachment;filename=p-values.csv" );
 
 		$tasks = $this->tasksModel->getTasks( $testSetId )->order( "id DESC" )->fetchAll();
-		$header = array("Name");
+		$header = array("task url_key");
 		foreach( $tasks as $task ) {
-			$header[] = $task->name;
+			$header[] = $task->url_key;
 		}
 
 		$metricId = $this->metricsModel->getMetricsId( $metricName );
 		$data = array();
 		foreach( $tasks as $task1 ) {
-			$row = array( $task1->name );
+			$row = array( $task1->url_key );
 
 			foreach( $tasks as $task2 ) {
 				if( $task1->id <= $task2->id ) {
@@ -71,8 +71,14 @@ class TasksPresenter extends BasePresenter {
 		$this->template->taskIds = array( $id1, $id2 );
 	}
 
-	public function renderNew( $id ) {
-		$this->template->testSet = $this->testSetsModel->getTestSetById( $id );
+	public function renderNew( $testSetId, $engineId ) {
+		$testSet = $this->testSetsModel->getTestSetById( $testSetId );
+		$this->template->testSet = $testSet;
+
+		$this->template->engine = $this->enginesModel->getEngineById( $engineId );
+
+		$languagePairId = $testSet['language_pairs_id'];
+		$this->template->availableEngines = $this->enginesModel->getAvailableEnginesByTestSetId( $testSetId );
 	}
 
 	public function actionEdit( $id ) {
@@ -83,10 +89,9 @@ class TasksPresenter extends BasePresenter {
 	public function saveEditForm( Form $form ) {
 		$data = $form->getValues();
 		$id = $data[ 'id' ];
-		$name = $data[ 'name' ];
 		$description = $data[ 'description' ];
 
-		$this->tasksModel->updateTask( $id, $name, $description );
+		$this->tasksModel->updateTask( $id, $description );
 		$testSetId = $this->tasksModel->getTask( $id )->test_sets_id;
 
 		$this->flashMessage( 'Task was successfully updated.', 'alert-success' );
@@ -102,8 +107,6 @@ class TasksPresenter extends BasePresenter {
 
 	protected function createComponentEditForm() {
 		$form = new Form( $this, 'editForm' );
-		$form->addText( 'name', 'Name' )
-			->addRule( Form::FILLED, 'Please, fill in a name of the task.' );
 		$form->addTextArea( 'description', 'Description' )
 			->addRule( Form::FILLED, 'Please, fill in a description of the task.' );
 		$form->addHidden( 'id' );

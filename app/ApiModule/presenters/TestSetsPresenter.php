@@ -18,7 +18,7 @@ class TestSetsPresenter extends BasePresenter {
 	public function renderUpload() {
 		$name = $this->getPostParameter( 'name' );
 		$languagePairsId = $this->getPostParameter( 'language-pairs-id' );
-		$url_key = \Nette\Utils\Strings::webalize( $name . "-" . $languagePairId);
+		$url_key = \Nette\Utils\Strings::webalize( $name . "-" . $languagePairsId);
 		$description = $this->getPostParameter( 'description' );
 		$source = $this->getPostFile( 'source' );
 		$reference = $this->getPostFile( 'reference' );

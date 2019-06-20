@@ -225,7 +225,7 @@ $(document).ready( function() {
 					<th class="span2"></th>
 				</tr>
 				<tr ng-repeat="task in tasks | filter:{ show: true } | orderBy:getOrderByValue:ascending">
-					<th class="name span2"><input type="checkbox" data-task-id="{{ task[ 'id' ] }}"/>{{ task[ 'name' ] }}</th>
+					<th class="name span2"><input type="checkbox" data-task-id="{{ task[ 'id' ] }}"/>{{ task[ 'url_key' ] }}</th>
 					<td class="description">
 						<span collapse-long collapse-long-text="{{ task[ 'description' ] }}" max-length=20>
 							{{ task[ 'description' ] }}

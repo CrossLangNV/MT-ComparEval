@@ -42,9 +42,9 @@ CREATE TABLE "tasks" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "test_sets_id" integer NOT NULL,
   "engines_id" integer NOT NULL,
-  "name" text NOT NULL,
   "url_key" text NOT NULL UNIQUE,
-  "description" text NULL, "visible" integer(0) NULL,
+  "description" text NULL,
+  "visible" integer(0) NULL,
   FOREIGN KEY ("test_sets_id") REFERENCES "test_sets" ("id") ON DELETE CASCADE,
   FOREIGN KEY ("engines_id") REFERENCES "engines" ("id") ON DELETE CASCADE,
   UNIQUE("test_sets_id","engines_id")

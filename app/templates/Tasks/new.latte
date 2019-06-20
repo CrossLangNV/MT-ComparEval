@@ -1,36 +1,44 @@
 {block #content}
-<h1 style="margin-bottom:50px;">New Task for {$testSet->name}</h1>
+<h1 style="margin-bottom:50px;">New Task for Test Set {$testSet->name}{if $engine} with Engine {$engine->name}{/if}</h1>
 
 <form class="form-horizontal" method="POST" action="{plink Api:Tasks:upload}" enctype="multipart/form-data">
-	<div class="control-group">
-		<label class="control-label" for="name">Name</label>
-		<div class="controls">
-			<input type="text" id="name" name="name" class="input-block-level">
-		</div>
-	</div>
+
 	<div class="control-group">
 		<label class="control-label" for="description">Description</label>
 		<div class="controls">
 			<input type="text" id="description" name="description" class="input-block-level">
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label" for="engines_id">engines_id</label>
-		<div class="controls">
-			<input type="text" id="engines_id" name="engines_id" class="input-block-level">
+
+	{if !$engine}
+		<div class="control-group">
+			<label class="control-label" for="engine_id">Engine</label>
+			<div class="controls">
+				<select id="engine_id" name="engine_id" >
+					{foreach $availableEngines as $anEngine}
+				  	<option value="{$anEngine['id']}">{$anEngine['name']}</option>
+				  {/foreach}
+				</select>
+			</div>
 		</div>
-	</div>
+	{/if}
+
 	<div class="control-group">
 		<label class="control-label" for="translation">Translation</label>
 		<div class="controls">
 			<input type="file" id="translation" name="translation" class="input-block-level">
 		</div>
 	</div>
+
 	<div class="control-group">
 		<div class="controls">
 			<button type="submit" class="btn">Save</button>
 			<input type="hidden" name="redirect" value="new" />
 			<input type="hidden" name="test_set_id" value="{$testSet->id}" />
+			{if $engine}
+				<input type="hidden" name="engine_id" value="{$engine->id}" />
+			{/if}
 		</div>
 	</div>
+
 </form>

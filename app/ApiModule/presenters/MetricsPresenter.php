@@ -48,7 +48,7 @@ class MetricsPresenter extends \Nette\Application\UI\Presenter {
 		}
 
 		foreach( $this->tasksModel->getTasks( $testSetId ) as $task ) {
-			$tasks[ $task->id ] = $task->name;
+			$tasks[ $task->id ] = $task->url_key;
 
 			foreach( $this->tasksModel->getTaskMetrics( $task ) as $name => $score ) {
 				if( !$this->metricsModel->isMetricEnabled( $name ) ) {
