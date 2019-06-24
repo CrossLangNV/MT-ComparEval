@@ -73,13 +73,13 @@ class TestSetsPresenter extends BasePresenter {
 		$this->testSetsModel->updateTestSet( $id, $name, $description );
 
 		$this->flashMessage( 'Test set was successfully updated.', 'alert-success' );
-		$this->redirect( 'list' );
+		$this->redirect( 'matrix' );
 	}
 
 	public function actionDelete( $id ) {
 		$this->testSetsModel->deleteTestSet( $id );
 
-		$this->redirect( 'list' );
+		$this->redirect( 'matrix' );
 	}
 
 	protected function createComponentEditForm() {
@@ -135,7 +135,8 @@ class TestSetsPresenter extends BasePresenter {
 					if ($engine['language_pairs_id'] == $languagePair['id']) {
 						foreach ($tasks as $taskIndex => $task) {
 							if ($engine['id'] == $task['engines_id']) {
-								$languagePairData[$testSet['id']][$engine['id']] = $task['description'];
+								$languagePairData[$testSet['id']][$engine['id']]['id'] = $task['id'];
+								$languagePairData[$testSet['id']][$engine['id']]['description'] = $task['description'];
 							}
 						}
 						if ($languagePairData[$testSet['id']][$engineIndex] == null) {

@@ -214,8 +214,8 @@ $(document).ready( function() {
 			<table class="table table-bordered tasksTable">
 				<tr>
 					<th class="span2">
-						<a ng-click="changeOrder( 'name' )">name</a>
-						<span class="icon" ng-class="{ 'icon-arrow-up': !ascending, 'icon-arrow-down': ascending}" ng-show="order == 'name'"></span>
+						<a ng-click="changeOrder( 'engine' )">engine</a>
+						<span class="icon" ng-class="{ 'icon-arrow-up': !ascending, 'icon-arrow-down': ascending}" ng-show="order == 'engine'"></span>
 					</th>
 					<th class="span3">description</th>
 					<th ng-repeat="metric in metrics" class="span2" style="text-align:center">
@@ -225,7 +225,7 @@ $(document).ready( function() {
 					<th class="span2"></th>
 				</tr>
 				<tr ng-repeat="task in tasks | filter:{ show: true } | orderBy:getOrderByValue:ascending">
-					<th class="name span2"><input type="checkbox" data-task-id="{{ task[ 'id' ] }}"/>{{ task[ 'url_key' ] }}</th>
+					<th class="engine span2"><input type="checkbox" data-task-id="{{ task[ 'id' ] }}"/>{{ task[ 'engine_name' ] }}</th>
 					<td class="description">
 						<span collapse-long collapse-long-text="{{ task[ 'description' ] }}" max-length=20>
 							{{ task[ 'description' ] }}

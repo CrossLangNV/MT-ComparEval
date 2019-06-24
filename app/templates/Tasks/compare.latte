@@ -19,7 +19,11 @@ function Sentences( $scope, $http ) {
 	$scope.task{$i} = {!$id};
 	{/foreach}
 	$scope.tasks = [];
-	$scope.taskUrlKeys
+	$scope.taskEngineNames
+
+
+
+
 
 
 
@@ -167,11 +171,19 @@ function Sentences( $scope, $http ) {
 				},
 				"yAxis": {
 					"title": {
-						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskEngineNames
 
 
 
-[ $scope.task0] + " - " + $scope.taskUrlKeys
+
+
+
+
+[ $scope.task0] + " - " + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -210,7 +222,11 @@ function Sentences( $scope, $http ) {
 				},
 				"series": [
 					{
-						"name": $scope.taskUrlKeys
+						"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -219,7 +235,11 @@ function Sentences( $scope, $http ) {
 						"color": "#468847"
 					},
 					{
-						"name": $scope.taskUrlKeys
+						"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -265,11 +285,19 @@ function Sentences( $scope, $http ) {
 					"text": "Paired Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " differences",
 				},
 				"subtitle": {
-					"text": $scope.taskUrlKeys
+					"text": $scope.taskEngineNames
 
 
 
-[ $scope.task0 ] + " is " + isBetter + " than " + $scope.taskUrlKeys
+
+
+
+
+[ $scope.task0 ] + " is " + isBetter + " than " + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -277,11 +305,19 @@ function Sentences( $scope, $http ) {
 				},
 				"yAxis": {
 					"title": {
-						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+						"text": "diff " + ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskEngineNames
 
 
 
-[ $scope.task0] + " - " + $scope.taskUrlKeys
+
+
+
+
+[ $scope.task0] + " - " + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -328,7 +364,11 @@ function Sentences( $scope, $http ) {
 
 				"series": [
 					{
-						"name": $scope.taskUrlKeys
+						"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -337,7 +377,11 @@ function Sentences( $scope, $http ) {
 						"color": "#468847"
 					},
 					{
-						"name": $scope.taskUrlKeys
+						"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -360,7 +404,11 @@ function Sentences( $scope, $http ) {
 					"zoomType": "x"
 				},
 				"title": {
-					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskUrlKeys
+					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -371,7 +419,11 @@ function Sentences( $scope, $http ) {
 				},
 				"yAxis": {
 					"title": {
-						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -428,7 +480,11 @@ function Sentences( $scope, $http ) {
 
 				"series": [
 					{
-						"name": $scope.taskUrlKeys
+						"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -451,7 +507,11 @@ function Sentences( $scope, $http ) {
 					"zoomType": "x"
 				},
 				"title": {
-					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskUrlKeys
+					"text": "Bootstrap Resampling " + ( $scope.currentMetric || 'bleu' ) + " " + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -462,7 +522,11 @@ function Sentences( $scope, $http ) {
 				},
 				"yAxis": {
 					"title": {
-						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskUrlKeys
+						"text": ( $scope.currentMetric || 'bleu' ) + " (" + $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -519,7 +583,11 @@ function Sentences( $scope, $http ) {
 
 				"series": [
 					{
-						"name": $scope.taskUrlKeys
+						"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -598,7 +666,11 @@ function Sentences( $scope, $http ) {
 					}
 				},
 				"series": [ {
-					"name": $scope.taskUrlKeys
+					"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -608,7 +680,11 @@ function Sentences( $scope, $http ) {
 						"align": "left",
 					}
 				},{
-					"name": $scope.taskUrlKeys
+					"name": $scope.taskEngineNames
+
+
+
+
 
 
 
@@ -633,11 +709,15 @@ function Sentences( $scope, $http ) {
 
 	function addTasks( data ) {
 		for ( taskId in data.tasks ) {
-			$scope.taskUrlKeys
+			$scope.taskEngineNames
 
 
 
-[ taskId ] = data.tasks[ taskId ].url_key;
+
+
+
+
+[ taskId ] = data.tasks[ taskId ].engine_name;
 			$scope.tasks.push( data.tasks[ taskId ] );
 		}
 	}
@@ -930,12 +1010,20 @@ function Sentences( $scope, $http ) {
 					<table class="table table-bordered table-condensed">
 						<tr>
 							<th class="span2">Metric</th>
-							<th class="span2" style="text-align: center">{{ taskUrlKeys
+							<th class="span2" style="text-align: center">{{ taskEngineNames
+
+
+
+
 
 
 
 [ task0 ] }}</th>
-							<th class="span2" style="text-align: center">{{ taskUrlKeys
+							<th class="span2" style="text-align: center">{{ taskEngineNames
+
+
+
+
 
 
 
@@ -983,7 +1071,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskUrlKeys
+									<caption>{{ taskEngineNames
+
+
+
+
 
 
 
@@ -1008,7 +1100,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskUrlKeys
+									<caption>{{ taskEngineNames
+
+
+
+
 
 
 
@@ -1050,7 +1146,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskUrlKeys
+									<caption>{{ taskEngineNames
+
+
+
+
 
 
 
@@ -1075,7 +1175,11 @@ function Sentences( $scope, $http ) {
 							<h5 class="text-center">{{ length }}-gram</h5>
 							<div class="span3" ng-repeat="task in [task0, task1]">
 								<table class="table table-bordered table-condensed">
-									<caption>{{ taskUrlKeys
+									<caption>{{ taskEngineNames
+
+
+
+
 
 
 
@@ -1141,7 +1245,11 @@ function Sentences( $scope, $http ) {
 
 							<label class="radio">
 								<input ng-model="showDiffFor" value="0" type="radio" name="show-diff-for" />
-								Show diff for {{ taskUrlKeys
+								Show diff for {{ taskEngineNames
+
+
+
+
 
 
 
@@ -1149,7 +1257,11 @@ function Sentences( $scope, $http ) {
 							</label>
 							<label class="radio">
 								<input ng-model="showDiffFor" value="1" type="radio" name="show-diff-for" />
-								Show diff for {{ taskUrlKeys
+								Show diff for {{ taskEngineNames
+
+
+
+
 
 
 
@@ -1182,7 +1294,11 @@ function Sentences( $scope, $http ) {
 
 							<label class="checkbox">
 								<input type="checkbox" ng-model="showTask0" />
-								Show {{ taskUrlKeys
+								Show {{ taskEngineNames
+
+
+
+
 
 
 
@@ -1191,7 +1307,11 @@ function Sentences( $scope, $http ) {
 
 							<label class="checkbox">
 								<input type="checkbox" ng-model="showTask1" />
-								Show {{ taskUrlKeys
+								Show {{ taskEngineNames
+
+
+
+
 
 
 
@@ -1235,7 +1355,11 @@ function Sentences( $scope, $http ) {
 					class="translation"
 					ng-show="( translation.task_id == task0 && showTask0 ) || ( translation.task_id == task1 && showTask1 )"
 				>
-					<th>{{ taskUrlKeys
+					<th>{{ taskEngineNames
+
+
+
+
 
 
 
@@ -1275,7 +1399,11 @@ function Sentences( $scope, $http ) {
 							<tr
 								ng-repeat="translation in sentence.translations| orderBy:'+task_id':(task0>task1)"
 							>
-								<th>{{ taskUrlKeys
+								<th>{{ taskEngineNames
+
+
+
+
 
 
 

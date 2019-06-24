@@ -21,6 +21,7 @@ class TasksPresenter extends BasePresenter {
 	public function renderList( $testSetId ) {
 		$this->template->testSetId = $testSetId;
 		$this->template->testSet = $this->testSetsModel->getTestSetById( $testSetId );
+		$this->template->engines = $this->enginesModel->getEngines();
 	}
 
 	public function renderDownloadPValues( $testSetId, $metricName ) {

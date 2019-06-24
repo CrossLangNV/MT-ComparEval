@@ -1,5 +1,5 @@
 {block #content}
-<h1 style="margin-bottom:50px;">New Task for Test Set {$testSet->name}{if $engine} with Engine {$engine->name}{/if}</h1>
+<h1 style="margin-bottom:50px;">New task for test set {$testSet->name}{if $engine} with engine {$engine->name}{/if}</h1>
 
 <form class="form-horizontal" method="POST" action="{plink Api:Tasks:upload}" enctype="multipart/form-data">
 

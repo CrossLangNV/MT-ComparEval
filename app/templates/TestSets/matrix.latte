@@ -22,8 +22,18 @@
         {foreach $testSets as $testSet}
           {if $testSet['language_pairs_id'] == $languagePair['id']}
             <tr>
-              <th>
+              <th style="position:relative;">
                 <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+                <div style="position:absolute;top:10px;right:24px;transform:scaleX(-1);">
+                  <a href="{plink TestSets:edit $testSet['id']}" style="color:black;">
+                    &#9998;
+                  </a>
+                </div>
+                <div style="position:absolute;top:10px;right:3px;">
+                  <a href="{plink TestSets:delete $testSet['id']}">
+                    &#x1F5D1;
+                  </a>
+                </div>
               </th>
               {foreach $engines as $engine}
                 {if $engine['language_pairs_id'] == $languagePair['id']}
@@ -32,7 +42,19 @@
                       <a href="{plink Tasks:new $testSet['id'], $engine['id']}" class="btn btn-default">Add Task</a>
                     </td>
                   {else}
-                    <td>{$tableData[$languagePair['id']][$testSet['id']][$engine['id']]}</td>
+                    <td style="position:relative;">
+                      {$tableData[$languagePair['id']][$testSet['id']][$engine['id']]['description']}
+                      <div style="position:absolute;top:10px;right:24px;transform:scaleX(-1);">
+                        <a href="{plink Tasks:edit $tableData[$languagePair['id']][$testSet['id']][$engine['id']]['id']}" style="color:black;">
+                          &#9998;
+                        </a>
+                      </div>
+                      <div style="position:absolute;top:10px;right:3px;">
+                        <a href="{plink Tasks:delete taskId => $tableData[$languagePair['id']][$testSet['id']][$engine['id']]['id']}">
+                          &#x1F5D1;
+                        </a>
+                      </div>
+                    </td>
                   {/if}
                 {/if}
               {/foreach}
