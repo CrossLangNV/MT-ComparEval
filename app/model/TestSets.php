@@ -29,6 +29,12 @@ class TestSets {
 			->fetch();
 	}
 
+	public function getTestSetsByLanguagePairId( $languagePairId ) {
+		return $this->db->table( 'test_sets' )
+			->where( 'language_pairs_id', $languagePairId )
+			->order( 'id' );
+	}
+
 	public function saveTestSet( $data ) {
 		if ( !$row = $this->getTestSetByName( $data[ 'url_key' ] ) ) {
 			$row = $this->db->table( 'test_sets' )->insert( $data );

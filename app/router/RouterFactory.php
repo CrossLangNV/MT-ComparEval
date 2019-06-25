@@ -37,7 +37,9 @@ class RouterFactory
 			$router[] = new Route('api/testsets/status/<id>', 'Api:TestSets:status');
 			$router[] = new Route('api/testsets/delete/<id>', 'Api:TestSets:delete');
 			$router[] = new Route('api/language-pair/new', 'Api:TestSets:createLanguagePair');
+			$router[] = new Route('api/language-pair/delete/<id>', 'Api:TestSets:deleteLanguagePair');
 			$router[] = new Route('api/engine/new', 'Api:TestSets:addEngine');
+			$router[] = new Route('api/engine/delete/<id>', 'Api:TestSets:deleteEngine');
 			$router[] = new Route('api/metrics', 'Api:Metrics:default');
 			$router[] = new Route('api/metrics/scores', 'Api:Metrics:scores');
 			$router[] = new Route('api/metrics/scores-in-test-set', 'Api:Metrics:scoresInTestSet');

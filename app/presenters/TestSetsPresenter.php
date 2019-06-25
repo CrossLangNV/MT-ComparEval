@@ -82,6 +82,30 @@ class TestSetsPresenter extends BasePresenter {
 		$this->redirect( 'matrix' );
 	}
 
+	public function actionDeleteLanguagePair( $languagePairId ) {
+		$testSetsOfLanguagePair = $this->testSetsModel->getTestSetsByLanguagePairId($languagePairId);
+
+		foreach($testSetsOfLanguagePair as $testSet) {
+			$this->testSetsModel->deleteTestSet( $testSet['id'] );
+		}
+
+		$this->languagePairsModel->deleteLanguagePair( $languagePairId );
+
+		$this->redirect( 'matrix' );
+	}
+
+	public function actionDeleteEngine( $engineId ) {
+		$tasksOfEngine = $this->tasksModel->getTasksByEngineId($engineId);
+
+		foreach($tasksOfEngine as $task) {
+			$this->tasksModel->deleteTask( $task['id'] );
+		}
+
+		$this->enginesModel->deleteEngine( $engineId );
+
+		$this->redirect( 'matrix' );
+	}
+
 	protected function createComponentEditForm() {
 		$form = new Form( $this, 'editForm' );
 		$form->addText( 'name', 'Name' )

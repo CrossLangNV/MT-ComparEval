@@ -1,16 +1,30 @@
 {block #content}
-<h1>Overview</h1>
+<h1 style="margin-bottom:50px;">Overview</h1>
 
 {if count($languagePairs)}
   {foreach $languagePairs->order( 'url_key' ) as $languagePair}
-    <h2>{$languagePair['source_language']}-{$languagePair['target_language']}</h2>
-    <table class="table table-bordered">
+    <h2>
+      {$languagePair['source_language']}-{$languagePair['target_language']}
+        <div style="display:inline-block;font-size: 59%;">
+          <a href="{plink TestSets:deleteLanguagePair $languagePair['id']}">
+            &#x1F5D1;
+          </a>
+        </div>
+    </h2>
+    <table class="table table-bordered" style="margin-bottom:40px;">
       <tr>
         <td></td>
         {if count($engines)}
           {foreach $engines as $engine}
             {if $engine['language_pairs_id'] == $languagePair['id']}
-              <th>{$engine['name']}</th>
+              <th style="position:relative;">
+                {$engine['name']}
+                <div style="position:absolute;top:10px;right:3px;">
+                  <a href="{plink TestSets:deleteEngine $engine['id']}">
+                    &#x1F5D1;
+                  </a>
+                </div>
+              </th>
             {/if}
           {/foreach}
         {/if}
@@ -83,7 +97,7 @@
 {/if}
 
 {if $showAdministration}
-  <a href="{plink TestSets:lp}" class="btn btn-default">Add Language Pair</a>
+  <a href="{plink TestSets:lp}" class="btn btn-default" style="margin-top:25px;">Add Language Pair</a>
 {/if}
 
 

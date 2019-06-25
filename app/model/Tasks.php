@@ -42,6 +42,12 @@ class Tasks {
 			->fetch();
 	}
 
+	public function getTasksByEngineId( $engineId ) {
+		return $this->db->table( 'tasks' )
+			->where( 'engines_id', $engineId )
+			->order( 'id' );
+	}
+
 	public function saveTask( $data ) {
 		if ( !$row = $this->getTaskByUrlKey( $data[ 'url_key' ] ) ) {
 			$row = $this->db->table( 'tasks' )->insert( $data );

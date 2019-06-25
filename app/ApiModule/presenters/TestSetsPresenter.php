@@ -7,12 +7,14 @@ class TestSetsPresenter extends BasePresenter {
 	private $testSetsModel;
 	private $languagePairsModel;
 	private $enginesModel;
+	private $tasksModel;
 
-	public function __construct( \Nette\Http\Request $httpRequest, \TestSets $testSetsModel, \LanguagePairs $languagePairsModel , \Engines $enginesModel) {
+	public function __construct( \Nette\Http\Request $httpRequest, \TestSets $testSetsModel, \LanguagePairs $languagePairsModel , \Engines $enginesModel, \Tasks $tasksModel) {
 		parent::__construct( $httpRequest );
 		$this->testSetsModel = $testSetsModel;
 		$this->languagePairsModel = $languagePairsModel;
 		$this->enginesModel = $enginesModel;
+		$this->tasksModel = $tasksModel;
 	}
 
 	public function renderUpload() {
@@ -87,6 +89,26 @@ class TestSetsPresenter extends BasePresenter {
 		}
 	}
 
+	public function renderDeleteLanguagePair( $id ) {
+		$testSetsOfLanguagePair = $this->testSetsModel->getTestSetsByLanguagePairId($languagePairId);
+
+		$ok = true;
+
+		foreach($testSetsOfLanguagePair as $testSet) {
+			$testSetDeleted = (bool) $this->testSetsModel->deleteTestSet( $testSet['id'] );
+			$ok = (bool) ($ok * $testSetDeleted);
+		}
+
+		if ($ok) {
+			$response = array( 'status' => (bool) $this->testSetsModel->deleteTestSet( $id ) );
+		}
+		else {
+			$response = array( 'status' => false );
+		}
+
+		$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
+	}
+
 	public function renderAddEngine() {
 		$name = $this->getPostParameter( 'name' );
 		$languagePairsId = $this->getPostParameter( 'language-pairs-id' );
@@ -107,6 +129,26 @@ class TestSetsPresenter extends BasePresenter {
 		} else {
 			$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
 		}
+	}
+
+	public function renderDeleteEngine( $engineId ) {
+		$tasksOfEngine = $this->tasksModel->getTasksByEngineId($engineId);
+
+		$ok = true;
+
+		foreach($tasksOfEngine as $task) {
+			$taskDeleted = (bool) $this->tasksModel->deleteTask( $task['id'] );
+			$ok = (bool) ($ok * $taskDeleted);
+		}
+
+		if ($ok) {
+			$response = array( 'status' => (bool) $this->enginesModel->deleteEngine( $engineId ) );
+		}
+		else {
+			$response = array( 'status' => false );
+		}
+
+		$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
 	}
 
 }
