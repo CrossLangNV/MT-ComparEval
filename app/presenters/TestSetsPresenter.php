@@ -184,4 +184,28 @@ class TestSetsPresenter extends BasePresenter {
 	public function renderNew( $languagePairId ) {
 		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
 	}
+
+	public function renderGraphicalComparison($languagePairId) {
+		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
+		$testSets = $this->testSetsModel->getTestSetsByLanguagePairId($languagePairId);
+		$this->template->testSets = $testSets;
+		$engines = $this->enginesModel->getEnginesByLanguagePairId($languagePairId);
+		$this->template->engines = $engines;
+
+		$metrics = array();
+
+		foreach ($testSets as $testSetIndex => $testSet) {
+			$tasks = $this->tasksModel->getTasks($testSet['id']);
+			foreach ($engines as $engineIndex => $engine) {
+				foreach ($tasks as $taskIndex => $task) {
+					if ($engine['id'] == $task['engines_id']) {
+						$metrics[$testSet['id']][$engine['id']]['id'] = $task['id'];
+						$metrics[$testSet['id']][$engine['id']]['metrics'] = $this->tasksModel->getTaskMetrics($task['id']);
+					}
+				}
+			}
+		}
+
+		$this->template->metrics = $metrics;
+	}
 }

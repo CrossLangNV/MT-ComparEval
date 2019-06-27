@@ -11,7 +11,7 @@
           </a>
         </div>
     </h2>
-    <table class="table table-bordered" style="margin-bottom:40px;">
+    <table class="table table-bordered" style="margin-bottom: 10px;">
       <tr>
         <td></td>
         {if count($engines)}
@@ -89,6 +89,7 @@
         <td></td>
       </tr>
     </table>
+    <a href="{plink TestSets:graphicalComparison $languagePair['id']}" class="btn btn-default" style="margin-bottom:40px;">View graphical comparison</a>
   {/foreach}
 {else}
   <div class="alert">
@@ -97,7 +98,9 @@
 {/if}
 
 {if $showAdministration}
-  <a href="{plink TestSets:lp}" class="btn btn-default" style="margin-top:25px;">Add Language Pair</a>
+  <div>
+    <a href="{plink TestSets:lp}" class="btn btn-default" style="margin-top:25px;">Add Language Pair</a>
+  </div>
 {/if}
 
 

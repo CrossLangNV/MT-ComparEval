@@ -29,6 +29,7 @@ class RouterFactory
 		} else {
 			$router[] = new Route('index.php', 'TestSets:matrix', Route::ONE_WAY);
 			$router[] = new Route('matrix', 'TestSets:matrix');
+			$router[] = new Route('test-sets/graphical-comparison', 'TestSets:graphicalComparison');
 			$router[] = new Route('api/sentences', 'Api:Sentences:default');
 			$router[] = new Route('api/sentences/by-id', 'Api:Sentences:byId');
 			$router[] = new Route('api/tasks', 'Api:Tasks:default');
@@ -51,7 +52,6 @@ class RouterFactory
 			$router[] = new Route('tasks/<id1>-<id2>/compare', 'Tasks:compare');
 			$router[] = new Route('tasks/<id>/detail', 'Tasks:detail');
 			$router[] = new Route('<presenter>/<action>[/<id>]', 'TestSets:matrix');
-			// $router[] = new Route('', 'TestSets:dummy');
 		}
 
 		return $router;
