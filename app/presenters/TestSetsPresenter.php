@@ -207,5 +207,32 @@ class TestSetsPresenter extends BasePresenter {
 		}
 
 		$this->template->metrics = $metrics;
+
+		$testSetNames = array();
+		foreach ($testSets as $testSetIndex => $testSet) {
+			array_push($testSetNames, $testSet['name']);
+		}
+
+		$this->template->testSetNames = $testSetNames;
+
+		$chartSeries = array();
+		foreach ($engines as $engineIndex => $engine) {
+			$engineData = array();
+			$engineData['name'] = $engine['name'];
+			$engineBleuScores = array();
+			foreach ($testSets as $testSetIndex => $testSet) {
+				$task = $this->tasksModel->getTaskByTestSetIdAndEngineId($testSet['id'],$engine['id']);
+				if ($task) {
+					$metrics = $this->tasksModel->getTaskMetrics($task['id']);
+					array_push($engineBleuScores, $metrics['BLEU']);
+				}
+				else {
+					array_push($engineBleuScores, null);
+				}
+				$engineData['data'] = $engineBleuScores;
+			}
+			array_push($chartSeries, $engineData);
+		}
+		$this->template->chartSeries = $chartSeries;
 	}
 }

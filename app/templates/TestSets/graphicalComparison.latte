@@ -1,0 +1,157 @@
+{block scripts}
+{include #parent}
+<script type="text/javascript" src="{$basePath}/js/directives.js"></script>
+<script type="text/javascript" src="{$basePath}/js/ngrams.js"></script>
+<script type="text/javascript" src="{$basePath}/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{$basePath}/js/highcharts.src.js"></script>
+
+<script type="text/javascript">
+	$(document).ready( function() {
+    var myChart = new Highcharts.Chart({
+      chart: {
+        type: 'scatter',
+        renderTo: 'bleu-scores-graph-container',
+      },
+      title: {
+        text: 'BLEU scores per engine per test set'
+      },
+      xAxis: {
+        title: {
+          text: ''
+        },
+        categories: {$testSetNames}
+      },
+      yAxis: {
+        title: {
+          text: 'BLEU'
+        },
+        min: 0,
+        max: 100
+    	},
+      series: {$chartSeries},
+		  tooltip: {
+        formatter: function () {
+          return 'Engine: <b>' + this.series.name + '</b><br>Test set: <b>' + this.x + '</b><br>BLEU: <b>' + this.y + '</b>';
+        }
+		  },
+    });
+	});
+</script>
+
+<script type="text/javascript">
+	$(document).ready( function() {
+		var engineSelect = $("#engine-select");
+
+		function renderDeltaChart() {
+			var selectedEngineIndex = engineSelect[0].options.selectedIndex;
+			var selectedEngineScores = {$chartSeries}[selectedEngineIndex]['data'];
+
+			var deltaChartSeries = [];
+
+			{$chartSeries}.forEach(function fillDeltaChartSeries(item, index) {
+				var thisEngineInfo = [];
+				thisEngineInfo["name"] = item["name"];
+				var thisEngineData = [];
+				item.data.forEach(function fillThisEngineData(dataItem, dataItemIndex) {
+					var delta;
+					if (dataItem === null || selectedEngineScores[dataItemIndex] === null) {
+						delta = null;
+					}
+					else {
+						delta = dataItem - selectedEngineScores[dataItemIndex];
+					}
+					thisEngineData.push(delta);
+			    if((dataItemIndex + 1) === item.data.length) {
+			      thisEngineInfo['data'] = thisEngineData;
+			    }
+				});
+				deltaChartSeries.push(thisEngineInfo);
+				if ((index + 1) === {$chartSeries}.length) {
+			    var myChart = new Highcharts.Chart({
+			      chart: {
+			        type: 'scatter',
+			        renderTo: 'delta-graph-container',
+			      },
+			      title: {
+			        text: 'BLEU score delta'
+			      },
+			      xAxis: {
+			        title: {
+			          text: ''
+			        },
+			        categories: {$testSetNames}
+			      },
+			      yAxis: {
+			        title: {
+			          text: 'BLEU'
+			        }
+			    	},
+			      series: deltaChartSeries,
+					  tooltip: {
+			        formatter: function () {
+			          return 'Engine: <b>' + this.series.name + '</b><br>Test set: <b>' + this.x + '</b><br>BLEU: <b>' + this.y + '</b>';
+			        }
+					  },
+			    });
+				}
+			});
+		}
+
+		renderDeltaChart();
+
+	  engineSelect[0].addEventListener('change', (event) => {
+	    renderDeltaChart();
+	  });
+	});
+</script>
+
+{/block}
+
+{block #content}
+
+<h1 style="margin-bottom:50px;">Graphical comparison of engines of language pair {$languagePair['url_key']}</h1>
+
+<h2 style="margin-bottom:30px;">BLEU scores</h2>
+
+<div id="bleu-scores-graph-container" style="width:100%;height:400px;margin-bottom:40px"></div>
+
+<table class="table table-bordered" style="margin-bottom: 10px;">
+	<tr>
+	  <td></td>
+	  {if count($engines)}
+	    {foreach $engines as $engine}
+	      <th style="position:relative;">
+	        {$engine['name']}
+	      </th>
+	    {/foreach}
+	  {/if}
+	</tr>
+	{if count($testSets)}
+	  {foreach $testSets as $testSet}
+	    <tr>
+	      <th style="position:relative;">
+	        <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+	      </th>
+	      {foreach $engines as $engine}
+	        <td style="position:relative;">
+	          {$metrics[$testSet['id']][$engine['id']]['metrics']['BLEU']}
+	        </td>
+	      {/foreach}
+	    </tr>
+	  {/foreach}
+	{/if}
+</table>
+
+<h2 style="margin:30px 0;">Delta</h2>
+
+<p>
+	The delta of the engines compared to the
+		<select id="engine-select" style="position: relative;top: 0.3em;">
+	    {foreach $engines as $engine}
+		  	<option value="{$engine['id']}">{$engine['name']}</option>
+		  {/foreach}
+		</select>
+	engine:
+</p>
+
+<div id="delta-graph-container" style="width:100%;height:400px;margin:40px 0"></div>
