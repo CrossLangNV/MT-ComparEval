@@ -14,6 +14,7 @@ CREATE TABLE "test_sets" (
   "name" text NOT NULL,
   "url_key" text NOT NULL UNIQUE,
   "description" text NOT NULL,
+  "domain" text NOT NULL,
   "visible" integer(0) NULL,
   UNIQUE("name","language_pairs_id")
 );

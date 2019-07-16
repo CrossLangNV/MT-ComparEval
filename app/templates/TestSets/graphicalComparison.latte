@@ -105,6 +105,59 @@
 	});
 </script>
 
+<script type="text/javascript">
+  $(document).ready( function() {
+    var myChart = new Highcharts.Chart({
+      chart: {
+        type: 'scatter',
+        renderTo: 'bleu-scores-per-domain-graph-container',
+      },
+      title: {
+        text: 'BLEU scores per engine per test set'
+      },
+      xAxis: {
+        title: {
+          text: ''
+        },
+        categories: {$testSetNamesSortedPerDomain},
+      },
+      yAxis: {
+        title: {
+          text: 'BLEU'
+        },
+        min: 0,
+        max: 100
+      },
+      series: {$chartSeriesSortedPerDomain},
+      tooltip: {
+        formatter: function () {
+          return 'Engine: <b>' + this.series.name + '</b><br>Test set: <b>' + this.x + '</b><br>BLEU: <b>' + this.y + '</b>';
+        }
+      },
+    });
+
+    {$domains}.forEach(addPlotBand);
+
+    var even = true;
+    function addPlotBand(item, index) {
+      var color = '#dfe8f7';
+      if (even) {
+        color = '#f7f3df';
+      }
+      myChart.xAxis[0].addPlotBand({
+        from: item['begin'] - 0.5,
+        to: item['end'] - 0.5,
+        color: color,
+        id: item['name'],
+        label: {
+          text: item['name']
+        }
+      });
+      even = !even;
+    }
+  });
+</script>
+
 {/block}
 
 {block #content}
@@ -155,3 +208,7 @@
 </p>
 
 <div id="delta-graph-container" style="width:100%;height:400px;margin:40px 0"></div>
+
+<h2 style="margin-bottom:30px;">BLEU scores of test sets sorted by domain</h2>
+
+<div id="bleu-scores-per-domain-graph-container" style="width:100%;height:400px;margin-bottom:40px"></div>

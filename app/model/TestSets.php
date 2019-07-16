@@ -35,6 +35,12 @@ class TestSets {
 			->order( 'id' );
 	}
 
+	public function getTestSetsByLanguagePairIdOrderByDomain( $languagePairId ) {
+		return $this->db->table( 'test_sets' )
+			->where( 'language_pairs_id', $languagePairId )
+			->order( 'domain', 'desc' );
+	}
+
 	public function saveTestSet( $data ) {
 		if ( !$row = $this->getTestSetByName( $data[ 'url_key' ] ) ) {
 			$row = $this->db->table( 'test_sets' )->insert( $data );
@@ -43,10 +49,10 @@ class TestSets {
 		return $row->getPrimary( TRUE );
 	}
 
-	public function updateTestSet( $testSetId, $name, $description ) {
+	public function updateTestSet( $testSetId, $name, $description, $domain ) {
 		$this->db->table( 'test_sets' )
 			->get( $testSetId )
-			->update( array( 'name' => $name, 'description' => $description ) );
+			->update( array( 'name' => $name, 'description' => $description, 'domain' => $domain ) );
 
 	}
 

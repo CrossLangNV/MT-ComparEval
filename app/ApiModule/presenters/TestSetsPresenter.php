@@ -22,12 +22,14 @@ class TestSetsPresenter extends BasePresenter {
 		$languagePairsId = $this->getPostParameter( 'language-pairs-id' );
 		$url_key = \Nette\Utils\Strings::webalize( $name . "-" . $languagePairsId);
 		$description = $this->getPostParameter( 'description' );
+		$domain = $this->getPostParameter( 'domain' );
 		$source = $this->getPostFile( 'source' );
 		$reference = $this->getPostFile( 'reference' );
 
 		$data = array(
 			'name' => $name,
 			'description' => $description,
+			'domain' => $domain,
 			'url_key' => $url_key,
 			'language_pairs_id' => $languagePairsId
 		);
@@ -35,7 +37,7 @@ class TestSetsPresenter extends BasePresenter {
 		$path = __DIR__ . '/../../../data/' . $url_key . '/';
 		$source->move( $path . 'source.txt' );
 		$reference->move( $path . 'reference.txt' );
-		file_put_contents( $path . 'config.neon', "name: $name\ndescription: $description\nurl_key: $url_key\nlanguage_pairs_id: $languagePairsId" );
+		file_put_contents( $path . 'config.neon', "name: $name\ndescription: $description\ndomain: $domain\nurl_key: $url_key\nlanguage_pairs_id: $languagePairsId" );
 
 		$response = array( 'test_set_id' => $this->testSetsModel->saveTestSet( $data ) );
 

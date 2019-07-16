@@ -69,8 +69,9 @@ class TestSetsPresenter extends BasePresenter {
 		$id = $data[ 'id' ];
 		$name = $data[ 'name' ];
 		$description = $data[ 'description' ];
+		$domain = $data[ 'domain' ];
 
-		$this->testSetsModel->updateTestSet( $id, $name, $description );
+		$this->testSetsModel->updateTestSet( $id, $name, $description, $domain );
 
 		$this->flashMessage( 'Test set was successfully updated.', 'alert-success' );
 		$this->redirect( 'matrix' );
@@ -109,9 +110,11 @@ class TestSetsPresenter extends BasePresenter {
 	protected function createComponentEditForm() {
 		$form = new Form( $this, 'editForm' );
 		$form->addText( 'name', 'Name' )
-			->addRule( Form::FILLED, 'Please, fill in a name of the test set.' );
+			->addRule( Form::FILLED, 'Please, fill in the name of the test set.' );
 		$form->addTextArea( 'description', 'Description' )
-			->addRule( Form::FILLED, 'Please, fill in a description of the test set.' );
+			->addRule( Form::FILLED, 'Please, fill in the description of the test set.' );
+		$form->addText( 'domain', 'Domain' )
+			->addRule( Form::FILLED, 'Please, fill in the domain of the test set.' );
 		$form->addHidden( 'id' );
 		$form->addSubmit('save', 'Save');
 		$form->onSubmit[] = array( $this, 'saveEditForm' );
@@ -188,6 +191,7 @@ class TestSetsPresenter extends BasePresenter {
 	public function renderGraphicalComparison($languagePairId) {
 		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
 		$testSets = $this->testSetsModel->getTestSetsByLanguagePairId($languagePairId);
+		$testSetsOrderedByDomain = $this->testSetsModel->getTestSetsByLanguagePairIdOrderByDomain($languagePairId);
 		$this->template->testSets = $testSets;
 		$engines = $this->enginesModel->getEnginesByLanguagePairId($languagePairId);
 		$this->template->engines = $engines;
@@ -234,5 +238,53 @@ class TestSetsPresenter extends BasePresenter {
 			array_push($chartSeries, $engineData);
 		}
 		$this->template->chartSeries = $chartSeries;
+
+		$chartSeriesSortedPerDomain = array();
+		foreach ($engines as $engineIndex => $engine) {
+			$engineData = array();
+			$engineData['name'] = $engine['name'];
+			$engineBleuScores = array();
+			foreach ($testSetsOrderedByDomain as $testSetIndex => $testSet) {
+				$task = $this->tasksModel->getTaskByTestSetIdAndEngineId($testSet['id'],$engine['id']);
+				if ($task) {
+					$metrics = $this->tasksModel->getTaskMetrics($task['id']);
+					array_push($engineBleuScores, $metrics['BLEU']);
+				}
+				else {
+					array_push($engineBleuScores, null);
+				}
+				$engineData['data'] = $engineBleuScores;
+			}
+			array_push($chartSeriesSortedPerDomain, $engineData);
+		}
+		$this->template->chartSeriesSortedPerDomain = $chartSeriesSortedPerDomain;
+
+		$testSetNamesSortedPerDomain = array();
+		foreach ($testSetsOrderedByDomain as $testSetIndex => $testSet) {
+			array_push($testSetNamesSortedPerDomain, $testSet['name']);
+		}
+
+		$domains = array();
+		$curDomain = array();
+		$count = 0;
+		foreach ($testSetsOrderedByDomain as $testSetIndex => $testSet) {
+			if ($testSet['domain'] != $curDomain['name']) {
+				if ($curDomain['name']) {
+					$curDomain['end'] = $count;
+					array_push($domains, $curDomain);
+					$curDomain = array();
+				}
+				$curDomain['name'] = $testSet['domain'];
+				$curDomain['begin'] = $count;
+			}
+			$count++;
+		}
+		if ($curDomain['name']) {
+			$curDomain['end'] = $count;
+			array_push($domains, $curDomain);
+		}
+		$this->template->domains = $domains;
+
+		$this->template->testSetNamesSortedPerDomain = $testSetNamesSortedPerDomain;
 	}
 }
