@@ -191,8 +191,9 @@ class TestSetsPresenter extends BasePresenter {
 	public function renderGraphicalComparison($languagePairId) {
 		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
 		$testSets = $this->testSetsModel->getTestSetsByLanguagePairId($languagePairId);
-		$testSetsOrderedByDomain = $this->testSetsModel->getTestSetsByLanguagePairIdOrderByDomain($languagePairId);
 		$this->template->testSets = $testSets;
+		$testSetsOrderedByDomain = $this->testSetsModel->getTestSetsByLanguagePairIdOrderByDomain($languagePairId);
+		$this->template->testSetsOrderedByDomain = $testSetsOrderedByDomain;
 		$engines = $this->enginesModel->getEnginesByLanguagePairId($languagePairId);
 		$this->template->engines = $engines;
 

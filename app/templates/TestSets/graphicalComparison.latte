@@ -97,10 +97,23 @@
 			});
 		}
 
+    function fillDeltaTable() {
+      var metrics = {$metrics};
+      var selectedEngineIndex = engineSelect[0].options.selectedIndex;
+      var selectedEngineScores = {$chartSeries}[selectedEngineIndex]['data'];
+      Object.keys(metrics).forEach(function processKeys(testSetId, index) {
+        Object.keys(metrics[testSetId]).forEach(function processKeys(engineId) {
+          document.getElementById("delta-" + testSetId + "-" + engineId).innerHTML = metrics[testSetId][engineId]['metrics']['BLEU'] - selectedEngineScores[index];
+        });
+      });
+    }
+
 		renderDeltaChart();
+    fillDeltaTable();
 
 	  engineSelect[0].addEventListener('change', (event) => {
 	    renderDeltaChart();
+      fillDeltaTable();
 	  });
 	});
 </script>
@@ -158,6 +171,106 @@
   });
 </script>
 
+<script type="text/javascript">
+  $(document).ready( function() {
+    var engineSelect = $("#engine-select-with-domain");
+
+    function renderDeltaChart() {
+      var selectedEngineIndex = engineSelect[0].options.selectedIndex;
+      var selectedEngineScores = {$chartSeriesSortedPerDomain}[selectedEngineIndex]['data'];
+
+      var deltaChartSeries = [];
+
+      {$chartSeriesSortedPerDomain}.forEach(function fillDeltaChartSeries(item, index) {
+        var thisEngineInfo = [];
+        thisEngineInfo["name"] = item["name"];
+        var thisEngineData = [];
+        item.data.forEach(function fillThisEngineData(dataItem, dataItemIndex) {
+          var delta;
+          if (dataItem === null || selectedEngineScores[dataItemIndex] === null) {
+            delta = null;
+          }
+          else {
+            delta = dataItem - selectedEngineScores[dataItemIndex];
+          }
+          thisEngineData.push(delta);
+          if((dataItemIndex + 1) === item.data.length) {
+            thisEngineInfo['data'] = thisEngineData;
+          }
+        });
+        deltaChartSeries.push(thisEngineInfo);
+        if ((index + 1) === {$chartSeriesSortedPerDomain}.length) {
+          var myChart = new Highcharts.Chart({
+            chart: {
+              type: 'scatter',
+              renderTo: 'delta-graph-with-domain-container',
+            },
+            title: {
+              text: 'BLEU score delta'
+            },
+            xAxis: {
+              title: {
+                text: ''
+              },
+              categories: {$testSetNamesSortedPerDomain}
+            },
+            yAxis: {
+              title: {
+                text: 'BLEU'
+              }
+            },
+            series: deltaChartSeries,
+            tooltip: {
+              formatter: function () {
+                return 'Engine: <b>' + this.series.name + '</b><br>Test set: <b>' + this.x + '</b><br>BLEU: <b>' + this.y + '</b>';
+              }
+            },
+          });
+
+          {$domains}.forEach(addPlotBand);
+
+          var even = true;
+          function addPlotBand(item, index) {
+            var color = '#dfe8f7';
+            if (even) {
+              color = '#f7f3df';
+            }
+            myChart.xAxis[0].addPlotBand({
+              from: item['begin'] - 0.5,
+              to: item['end'] - 0.5,
+              color: color,
+              id: item['name'],
+              label: {
+                text: item['name']
+              }
+            });
+            even = !even;
+          }
+        }
+      });
+    }
+
+    function fillDeltaTable() {
+      var metrics = {$metrics};
+      var selectedEngineIndex = engineSelect[0].options.selectedIndex;
+      var selectedEngineScores = {$chartSeries}[selectedEngineIndex]['data'];
+      Object.keys(metrics).forEach(function processKeys(testSetId, index) {
+        Object.keys(metrics[testSetId]).forEach(function processKeys(engineId) {
+          document.getElementById("delta-ordered-" + testSetId + "-" + engineId).innerHTML = metrics[testSetId][engineId]['metrics']['BLEU'] - selectedEngineScores[index];
+        });
+      });
+    }
+
+    renderDeltaChart();
+    fillDeltaTable();
+
+    engineSelect[0].addEventListener('change', (event) => {
+      renderDeltaChart();
+      fillDeltaTable();
+    });
+  });
+</script>
+
 {/block}
 
 {block #content}
@@ -199,7 +312,7 @@
 
 <p>
 	The delta of the engines compared to the
-		<select id="engine-select" style="position: relative;top: 0.3em;">
+		<select id="engine-select" style="position: relative;top: 0.3em;" onchange="$selectedEngine = this.selectedIndex">
 	    {foreach $engines as $engine}
 		  	<option value="{$engine['id']}">{$engine['name']}</option>
 		  {/foreach}
@@ -209,6 +322,99 @@
 
 <div id="delta-graph-container" style="width:100%;height:400px;margin:40px 0"></div>
 
+<table class="table table-bordered" style="margin-bottom: 50px;">
+  <tr>
+    <td></td>
+    {if count($engines)}
+      {foreach $engines as $engine}
+        <th style="position:relative;">
+          {$engine['name']}
+        </th>
+      {/foreach}
+    {/if}
+  </tr>
+  {if count($testSets)}
+    {foreach $testSets as $testSet}
+      <tr>
+        <th style="position:relative;">
+          <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+        </th>
+        {foreach $engines as $engine}
+          <td style="position:relative;" id="delta-{$testSet['id']}-{$engine['id']}">
+          </td>
+        {/foreach}
+      </tr>
+    {/foreach}
+  {/if}
+</table>
+
 <h2 style="margin-bottom:30px;">BLEU scores of test sets sorted by domain</h2>
 
 <div id="bleu-scores-per-domain-graph-container" style="width:100%;height:400px;margin-bottom:40px"></div>
+
+<table class="table table-bordered" style="margin-bottom: 40px;">
+  <tr>
+    <td></td>
+    {if count($engines)}
+      {foreach $engines as $engine}
+        <th style="position:relative;">
+          {$engine['name']}
+        </th>
+      {/foreach}
+    {/if}
+  </tr>
+  {if count($testSetsOrderedByDomain)}
+    {foreach $testSetsOrderedByDomain as $testSet}
+      <tr>
+        <th style="position:relative;">
+          <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+        </th>
+        {foreach $engines as $engine}
+          <td style="position:relative;">
+            {$metrics[$testSet['id']][$engine['id']]['metrics']['BLEU']}
+          </td>
+        {/foreach}
+      </tr>
+    {/foreach}
+  {/if}
+</table>
+
+<h2 style="margin:30px 0;">Delta sorted by domain</h2>
+
+<p>
+  The delta of the engines compared to the
+    <select id="engine-select-with-domain" style="position: relative;top: 0.3em;">
+      {foreach $engines as $engine}
+        <option value="{$engine['id']}">{$engine['name']}</option>
+      {/foreach}
+    </select>
+  engine:
+</p>
+
+<div id="delta-graph-with-domain-container" style="width:100%;height:400px;margin:40px 0"></div>
+
+<table class="table table-bordered" style="margin-bottom: 10px;">
+  <tr>
+    <td></td>
+    {if count($engines)}
+      {foreach $engines as $engine}
+        <th style="position:relative;">
+          {$engine['name']}
+        </th>
+      {/foreach}
+    {/if}
+  </tr>
+  {if count($testSetsOrderedByDomain)}
+    {foreach $testSetsOrderedByDomain as $testSet}
+      <tr>
+        <th style="position:relative;">
+          <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
+        </th>
+        {foreach $engines as $engine}
+          <td style="position:relative;" id="delta-ordered-{$testSet['id']}-{$engine['id']}">
+          </td>
+        {/foreach}
+      </tr>
+    {/foreach}
+  {/if}
+</table>
