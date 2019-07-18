@@ -271,6 +271,41 @@
   });
 </script>
 
+<script type="text/javascript">
+  $(document).ready( function() {
+
+    function markHighestValues(table) {
+      table.find("th").each(function(columnIndex) {
+        var oldValue=0, currentValue=0, $elementToMark;
+        var $trs = table.find("tr");
+        $trs.each(function(index, element)
+        {
+          var $td = $(this).find("td:eq("+ columnIndex +")");
+          if ($td.length!=0)
+          {
+            currentValue= parseFloat($td.html());
+            if(currentValue > oldValue)
+            {
+              $elementToMark= $td;
+              oldValue= currentValue;
+            }
+            if(index == $trs.length-1)
+            {
+              $elementToMark.css("font-weight", "bold");
+            }
+          }
+        });
+      });
+    }
+
+    var $tableBleu = $("#bleu");
+    markHighestValues($tableBleu);
+    var $tablePerDomain = $("#per-domain");
+    markHighestValues($tablePerDomain);
+
+  });
+</script>
+
 {/block}
 
 {block #content}
@@ -281,7 +316,7 @@
 
 <div id="bleu-scores-graph-container" style="width:100%;height:400px;margin-bottom:40px"></div>
 
-<table class="table table-bordered" style="margin-bottom: 10px;">
+<table id="bleu" class="table table-bordered" style="margin-bottom: 10px;">
 	<tr>
 	  <td></td>
 	  {if count($engines)}
@@ -352,7 +387,7 @@
 
 <div id="bleu-scores-per-domain-graph-container" style="width:100%;height:400px;margin-bottom:40px"></div>
 
-<table class="table table-bordered" style="margin-bottom: 40px;">
+<table id="per-domain" class="table table-bordered" style="margin-bottom: 40px;">
   <tr>
     <td></td>
     {if count($engines)}
