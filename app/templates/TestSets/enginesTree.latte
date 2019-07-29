@@ -1,0 +1,95 @@
+{block scripts}
+
+{include #parent}
+
+<script type="text/javascript" src="{$basePath}/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{$basePath}/js/vis.min.js"></script>
+<script type="text/css" src="{$basePath}/js/vis.min.css"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    var nodes = [];
+    var edges = [];
+
+    Object.keys({$engines}).forEach(function fnctn(item, index) {
+      var engine = {$engines}[item];
+      if (engine['show']) {
+        var node = new Object();
+        node.id = engine['id'];
+        node.label = engine['name'] + '\n' + engine['bleu'];
+        if (engine['id'] == {$engineId}) {
+          var color = new Object();
+          color.background = 'rgba(112, 168, 245, 1)';
+          color.border = 'rgba(24, 76, 215, 1)';
+          node.color = color;
+          var font = new Object();
+          font.bold = 'true';
+          node.font = font;
+        }
+        nodes.push(node);
+        if (engine.parent_id != null && engine.parent_id != 0) {
+          edges.push({
+            from: engine.parent_id,
+            to: engine.id,
+            color: {
+              color: 'rgba(120, 120, 120, 1)'
+            }
+          });
+        }
+      }
+    });
+
+    var container = document.getElementById('tree');
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+    var options = {
+      nodes: {
+        shape: 'ellipse',
+        widthConstraint:
+          {
+            minimum: 30
+          },
+        heightConstraint:
+          {
+            minimum: 30
+          },
+        font:
+          {
+            size: 16
+          },
+        color:
+          {
+            background: 'rgba(165, 165, 165, 1)',
+            border: 'rgba(120, 120, 120, 1)'
+          }
+      },
+      edges: {
+        arrows: {
+          to: {
+            enabled: true,
+            scaleFactor: 1,
+            type: "arrow"
+          }
+        },
+        chosen: false
+      }
+    };
+    network = new vis.Network(container, data, options);
+    network.setSize("500", "500");
+
+    $(".vis-network").css('margin-left', "auto");
+    $(".vis-network").css('margin-right', "auto");
+
+  });
+</script>
+
+{/block}
+
+{block #content}
+
+<h1 style="margin-bottom:50px;">Parent-child tree of {$engine['name']} engine</h1>
+
+<div id="tree" style="min-height:500px;"></div>

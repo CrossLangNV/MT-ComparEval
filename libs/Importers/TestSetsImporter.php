@@ -65,4 +65,35 @@ class TestSetsImporter extends Importer {
 	protected function showImported( $metadata ) {
 		$this->testSetsModel->setVisible( $metadata[ 'test_set_id' ] );
 	}
+
+	// we only need the first folder in the case of a test set
+	public function importFromFolders( array $folders ) {
+		$folders = array_values($folders);
+		$folder = $folders[0];
+
+		try {
+			$config = array( 'url_key' => $folder->getName() );
+			$metadata = array( 'test_set_id' => -1, 'task_id' => -1 );
+
+			$config = $this->getConfig( $folder );
+
+			$this->logImportStart( $config );
+			$metadata = $this->processMetadata( $config );
+			$sentences = $this->parseResources( $folder, $config );
+			$this->processSentences( $config, $metadata, $sentences, $isFirst, $isLast);
+
+			$this->logImportSuccess( $config );
+			$this->showImported( $metadata );
+			$folder->lock( 'imported' );
+		} catch( \IteratorsLengthsMismatchException $exception ) {
+			$this->handleNotMatchingNumberOfSentences( $config['url_key'] );
+			$this->handleImportError( $folder, $metadata );
+		} catch( \ImporterException $exception ) {
+			$this->logImportAbortion( $config, $exception );
+			$this->handleImportError( $folder, $metadata );
+		} catch( Exception $exception ) {
+			$this->logger->log( $exception->getMessage() );
+			$this->handleImportError( $folder, $metadata );
+		}
+	}
 }

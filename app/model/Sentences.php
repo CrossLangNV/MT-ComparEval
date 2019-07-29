@@ -27,7 +27,7 @@ class Sentences {
 
 	public function getSentences( $taskIds, $offset, $limit, $orderBy, $order ) {
 		$sentenceIds = $this->getSentenceIdsForRequest( $taskIds, $offset, $limit, $orderBy, $order );
-		
+
 		return $this->getSentencesWithIds( $sentenceIds, $taskIds );
 	}
 
@@ -57,7 +57,7 @@ class Sentences {
 			$row[ 'source' ] = $sentence[ 'source' ];
 			$row[ 'reference' ] = $sentence[ 'reference' ];
 			$row[ 'translations' ] = array();
-			
+
 			foreach( $sentence->related( 'translations.sentences_id' )->where( 'tasks_id', $taskIds ) as $translation ) {
 				$rowTranslation = array();
 				$rowTranslation[ 'task_id' ] = $translation[ 'tasks_id' ];
@@ -89,25 +89,25 @@ class Sentences {
 			return $this->getSentencesIdsSortedByMetric( $taskIds, $orderBy, $order, $offset, $limit );
 		} else {
 			return $this->getSentencesSortedByDiffMetric( $taskIds, $orderBy, $order, $offset, $limit );
-		}	
+		}
 	}
 
 	private function getSentenceIdsSortedById( $taskIds, $orderBy, $order, $offset, $limit ) {
 		return array_keys( $this->db
 			->table( 'translations' )
 			->select( 'DISTINCT sentences_id' )
-			->where( 'tasks_id', $taskIds ) 
+			->where( 'tasks_id', $taskIds )
 			->order( 'sentences_id ' . strtoupper( $order ) )
 			->limit( $limit, $offset )
 			->fetchPairs( 'sentences_id' ) );
 	}
 
 	private function getSentencesIdsSortedByMetric( $taskIds, $orderBy, $order, $offset, $limit ) {
-		$metricsId = $this->metrics->getMetricsId( $orderBy ); 
+		$metricsId = $this->metrics->getMetricsId( $orderBy );
 
 		return array_keys( $this->db
 			->table( 'translations' )
-			->where( 'tasks_id', $taskIds ) 
+			->where( 'tasks_id', $taskIds )
 			->where( 'translations_metrics:metrics_id', $metricsId )
 			->order( 'translations_metrics:score ' . strtoupper( $order ) )
 			->limit( $limit, $offset )
@@ -116,28 +116,28 @@ class Sentences {
 
 	private function getSentencesSortedByDiffMetric( $taskIds, $orderBy, $order, $offset, $limit ) {
 		$metricsId = $this->metrics->getMetricsId( $orderBy );
-		$resultsA = $this->getTranslationsMetricsForTask( $taskIds[0], $metricsId ); 
-		$resultsB = $this->getTranslationsMetricsForTask( $taskIds[1], $metricsId ); 
+		$resultsA = $this->getTranslationsMetricsForTask( $taskIds[0], $metricsId );
+		$resultsB = $this->getTranslationsMetricsForTask( $taskIds[1], $metricsId );
 		$rawResult = $this->joinResults( $resultsA, $resultsB );
 		$sortedResult = $this->sortResult( $rawResult, $order );
 
 		return $this->sliceResult( $sortedResult, $offset, $limit );
 	}
 
-	private function getTranslationsMetricsForTask( $task, $metric ) {
+	public function getTranslationsMetricsForTask( $task, $metric ) {
 		return $this->db
 			->table( 'translations_metrics' )
 			->select( 'score, translations.sentences_id' )
 			->where( 'metrics_id', $metric )
 			->where( 'translations.tasks_id', $task )
 			->fetchPairs( 'sentences_id', 'score' );
-	} 
+	}
 
 	private function joinResults( $resultsA, $resultsB ) {
 		$result = array();
 		foreach( $resultsA as $sentenceId => $score ) {
 			$result[ $sentenceId ] = $score - $resultsB[ $sentenceId ];
-		}	
+		}
 
 		return $result;
 	}

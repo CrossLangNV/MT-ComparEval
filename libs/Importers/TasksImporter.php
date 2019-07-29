@@ -18,14 +18,18 @@ class TasksImporter extends Importer {
 	private $sampler;
 	private $preprocessor;
 	private $metrics;
+	private $engines;
+	private $engineId;
 
-	public function __construct( TestSets $testSetsModel, Tasks $tasksModel, NGrams $ngramsModel, BootstrapSampler $sampler, Preprocessor $preprocessor, $metrics ) {
+	public function __construct( TestSets $testSetsModel, Tasks $tasksModel, NGrams $ngramsModel, BootstrapSampler $sampler, Preprocessor $preprocessor, $metrics, Engines $enginesModel = null, $engineId = null ) {
 		$this->testSetsModel = $testSetsModel;
 		$this->ngramsModel = $ngramsModel;
 		$this->tasksModel = $tasksModel;
 		$this->sampler = $sampler;
 		$this->preprocessor = $preprocessor;
 		$this->metrics = $metrics;
+		$this->engines = $enginesModel;
+		$this->engineId = $engineId;
 	}
 
 	protected function logImportStart( $config ) {
@@ -47,9 +51,8 @@ class TasksImporter extends Importer {
 		return array( 'task_id' => $this->tasksModel->saveTask( $data ) );
 	}
 
-	protected function processSentences( $config, $metadata, $rawSentences ) {
+	protected function processSentences( $config, $metadata, $rawSentences, $storeTaskData = true, $storeEngineData = false) {
 		$sentenceMetrics = array();
-
 		foreach( array( FALSE, TRUE ) as $isCaseSensitive ) {
 			$preprocessor = $this->preprocessor;
 			$sentences = new MapperIterator(
@@ -68,34 +71,53 @@ class TasksImporter extends Importer {
 				}
 
 				$metric = $metric[ 'class' ];
-				$metric->init();
+		  	if ($storeTaskData) {
+			  	$metric->init();
+			  }
 
-				$metrics[ $name ] = $metric;
-				$sentenceMetrics[ $name ] = array();
+
+				  $metrics[ $name ] = $metric;
+
+		  	if ($storeTaskData) {
+				  $sentenceMetrics[ $name ] = array();
+			}
 			}
 
+			var_dump(array_keys($metrics));
 			foreach( $sentences as $sentence ) {
 				foreach( $metrics as $name => $metric ) {
+					var_dump(sha1(spl_object_hash($metric)));
 					$sentenceMetrics[ $name ][] = $metric->addSentence( $sentence['test_set']['reference'], $sentence['translation'], $sentence['meta'] );
 				}
 			}
 
-			foreach( $metrics as $name => $metric ) {
-				$this->tasksModel->addMetric( $metadata['task_id'], $name, $metric->getScore() );
+			if ($storeEngineData) {
+	    	foreach( $metrics as $name => $metric ) {
+	    		if ($name == "BLEU") {
+	    			$thisTask = $this->tasksModel->getTask($metadata['task_id']);
+			    	$this->engines->updateBleu($thisTask['engines_id'], $metric->getScore());
+	    		}
+		    }
 			}
 
-			foreach( $metrics as $name => $metric ) {
-				if( $this->metrics[ $name ][ 'compute_bootstrap' ] !== TRUE ) {
-					continue;
+			if ($storeTaskData) {
+				foreach( $metrics as $name => $metric ) {
+					var_dump("storing metric " . $metadata['task_id']);
+					$this->tasksModel->addMetric( $metadata['task_id'], $name, $metric->getScore() );
 				}
 
-				$this->logger->log( "Generating $name samples for {$config['url_key']}." );
-				$samples = $this->sampler->generateSamples( $metric, iterator_to_array( $sentences ) );
-				$this->tasksModel->addSamples( $metadata['task_id'], $name, $samples );
-				$this->logger->log( "Samples generated." );
-			}
-		}
+				foreach( $metrics as $name => $metric ) {
+					if( $this->metrics[ $name ][ 'compute_bootstrap' ] !== TRUE ) {
+						continue;
+					}
 
+					$this->logger->log( "Generating $name samples for {$config['url_key']}." );
+					$samples = $this->sampler->generateSamples( $metric, iterator_to_array( $sentences ) );
+					$this->tasksModel->addSamples( $metadata['task_id'], $name, $samples );
+					$this->logger->log( "Samples generated." );
+				}
+			}
+		var_dump("add_sentence");
 		$this->tasksModel->addSentences( $metadata['task_id'], $sentences, $sentenceMetrics );
 
 		if( $config[ 'precompute_ngrams' ] ) {
@@ -103,6 +125,7 @@ class TasksImporter extends Importer {
 			$this->ngramsModel->precomputeNgrams( $config['test_set']['id'], $metadata['task_id'] );
 			$this->logger->log( "N-grams precomputation done." );
 		}
+			}
 	}
 
 	protected function parseResources( Folder $folder, $config ) {

@@ -99,6 +99,7 @@ common:
 					@ngramsCounterPreprocessor
 				] ),
 				@enabledMetrics,
+				@engines
 			)
 			setup:
 				- setLogger( @logger )

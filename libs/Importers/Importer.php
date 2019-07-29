@@ -22,30 +22,36 @@ abstract class Importer {
 		$this->normalizer = $normalizer;
 	}
 
-	public function importFromFolder( Folder $folder ) {
-		try {
-			$config = array( 'url_key' => $folder->getName() );
-			$metadata = array( 'test_set_id' => -1, 'task_id' => -1 );
+	public function importFromFolders( array $folders ) {
+		$folders = array_values($folders);
+		foreach ($folders as $i => $folder) {
+			$isFirst = 0 === $i;
+			$isLast = count($folders) - 1 === $i;
+			var_dump("startin folder $i $isFirst $isLast");
+			try {
+				$config = array( 'url_key' => $folder->getName() );
+				$metadata = array( 'test_set_id' => -1, 'task_id' => -1 );
 
-			$config = $this->getConfig( $folder );
+				$config = $this->getConfig( $folder );
 
-			$this->logImportStart( $config );
-			$metadata = $this->processMetadata( $config );
-			$sentences = $this->parseResources( $folder, $config );
-			$this->processSentences( $config, $metadata, $sentences );
+				$this->logImportStart( $config );
+				$metadata = $this->processMetadata( $config );
+				$sentences = $this->parseResources( $folder, $config );
+				$this->processSentences( $config, $metadata, $sentences, $isFirst, $isLast);
 
-			$this->logImportSuccess( $config );
-			$this->showImported( $metadata );
-			$folder->lock( 'imported' );
-		} catch( \IteratorsLengthsMismatchException $exception ) {
-			$this->handleNotMatchingNumberOfSentences( $config['url_key'] );
-			$this->handleImportError( $folder, $metadata );
-		} catch( \ImporterException $exception ) {
-			$this->logImportAbortion( $config, $exception );
-			$this->handleImportError( $folder, $metadata );
-		} catch( Exception $exception ) {
-			$this->logger->log( $exception->getMessage() );
-			$this->handleImportError( $folder, $metadata );
+				$this->logImportSuccess( $config );
+				$this->showImported( $metadata );
+				$folder->lock( 'imported' );
+			} catch( \IteratorsLengthsMismatchException $exception ) {
+				$this->handleNotMatchingNumberOfSentences( $config['url_key'] );
+				$this->handleImportError( $folder, $metadata );
+			} catch( \ImporterException $exception ) {
+				$this->logImportAbortion( $config, $exception );
+				$this->handleImportError( $folder, $metadata );
+			} catch( Exception $exception ) {
+				$this->logger->log( $exception->getMessage() );
+				$this->handleImportError( $folder, $metadata );
+			}
 		}
 	}
 

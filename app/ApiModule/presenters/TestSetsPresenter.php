@@ -115,11 +115,16 @@ class TestSetsPresenter extends BasePresenter {
 		$name = $this->getPostParameter( 'name' );
 		$languagePairsId = $this->getPostParameter( 'language-pairs-id' );
 		$url_key = \Nette\Utils\Strings::webalize( $name . "-" . $languagePairsId );
+		$parentId = $this->getPostParameter( 'parent-id' );
+		if ($parentId == "NULL") {
+			$parentId == NULL;
+		}
 
 		$data = array(
 			'name' => $name,
 			'language_pairs_id' => $languagePairsId,
 			'url_key' => $url_key,
+			'parent_id' => $parentId,
 			'visible' => 1
 		);
 

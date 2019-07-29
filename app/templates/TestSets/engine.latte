@@ -8,6 +8,25 @@
 			<input type="text" id="name" name="name" class="input-block-level">
 		</div>
 	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="parent-id">Parent</label>
+		<div class="controls">
+			<select id="parent-id" name="parent-id" >
+		  	<option value="NULL">(none)</option>
+				{foreach $engines as $anEngine}
+			  	<option value="{$anEngine['id']}">{$anEngine['name']} (
+			  		{foreach $languagePairs as $lp}
+			  			{if $lp['id'] == $anEngine['language_pairs_id']}
+			  				{$lp['url_key']}
+			  			{/if}
+			  		{/foreach}
+			  	)</option>
+			  {/foreach}
+			</select>
+		</div>
+	</div>
+
 	<div class="control-group">
 		<div class="controls">
 			<button type="submit" class="btn">Save</button>

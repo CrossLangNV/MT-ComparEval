@@ -18,7 +18,7 @@
           {foreach $engines as $engine}
             {if $engine['language_pairs_id'] == $languagePair['id']}
               <th style="position:relative;">
-                {$engine['name']}
+                <a href="{plink TestSets:enginesTree $engine['id']}">{$engine['name']}</a>
                 <div style="position:absolute;top:10px;right:3px;">
                   <a href="{plink TestSets:deleteEngine $engine['id']}">
                     &#x1F5D1;

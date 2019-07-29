@@ -30,6 +30,7 @@ class RouterFactory
 			$router[] = new Route('index.php', 'TestSets:matrix', Route::ONE_WAY);
 			$router[] = new Route('matrix', 'TestSets:matrix');
 			$router[] = new Route('test-sets/graphical-comparison', 'TestSets:graphicalComparison');
+			$router[] = new Route('test-sets/engines-tree', 'TestSets:enginesTree');
 			$router[] = new Route('api/sentences', 'Api:Sentences:default');
 			$router[] = new Route('api/sentences/by-id', 'Api:Sentences:byId');
 			$router[] = new Route('api/tasks', 'Api:Tasks:default');

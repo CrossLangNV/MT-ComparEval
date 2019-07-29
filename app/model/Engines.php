@@ -95,4 +95,10 @@ class Engines {
       ->update( array( 'visible' => 1 ) );
   }
 
+  public function updateBleu( $engineId, $bleu ) {
+    $this->db->table( 'engines' )
+      ->get( $engineId )
+      ->update( array( 'bleu' => $bleu ) );
+  }
+
 }

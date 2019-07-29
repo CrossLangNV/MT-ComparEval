@@ -16,7 +16,8 @@ CREATE TABLE "test_sets" (
   "description" text NOT NULL,
   "domain" text NOT NULL,
   "visible" integer(0) NULL,
-  UNIQUE("name","language_pairs_id")
+  UNIQUE("name","language_pairs_id"),
+  FOREIGN KEY ("language_pairs_id") REFERENCES "language_pairs" ("id") ON DELETE CASCADE
 );
 
 
@@ -32,11 +33,19 @@ CREATE TABLE "sentences" (
 CREATE TABLE "engines" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "language_pairs_id" integer NOT NULL,
+  "parent_id" integer DEFAULT NULL,
   "name" text NOT NULL,
   "url_key" text NOT NULL UNIQUE,
+  "bleu" float NOT NULL DEFAULT 0,
   "visible" integer(0) NULL,
-  UNIQUE("language_pairs_id","name")
+  UNIQUE("name","language_pairs_id"),
+  FOREIGN KEY ("language_pairs_id") REFERENCES "language_pairs" ("id") ON DELETE CASCADE,
+  FOREIGN KEY ("parent_id") REFERENCES "engines" ("id") ON DELETE SET NULL
 );
+
+
+
+  FOREIGN KEY ("language_pairs_id") REFERENCES "language_pairs" ("id") ON DELETE CASCADE
 
 
 CREATE TABLE "tasks" (

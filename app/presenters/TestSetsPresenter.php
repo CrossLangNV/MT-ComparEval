@@ -9,12 +9,14 @@ class TestSetsPresenter extends BasePresenter {
 	private $tasksModel;
 	private $languagePairsModel;
 	private $enginesModel;
+	private $sentencesModel;
 
-	public function __construct(Tasks $tasksModel, TestSets $testSetsModel, LanguagePairs $languagePairsModel, Engines $enginesModel) {
+	public function __construct(Tasks $tasksModel, TestSets $testSetsModel, LanguagePairs $languagePairsModel, Engines $enginesModel, Sentences $sentencesModel) {
 		$this->testSetsModel = $testSetsModel;
 		$this->tasksModel = $tasksModel;
 		$this->languagePairsModel = $languagePairsModel;
 		$this->enginesModel = $enginesModel;
+		$this->sentencesModel = $sentencesModel;
 	}
 
 	public function renderList() {
@@ -182,6 +184,8 @@ class TestSetsPresenter extends BasePresenter {
 
 	public function renderEngine( $languagePairId ) {
 		$this->template->languagePair = $this->languagePairsModel->getLanguagePairById($languagePairId);
+		$this->template->languagePairs = $this->languagePairsModel->getLanguagePairs();
+		$this->template->engines = $this->enginesModel->getEngines();
 	}
 
 	public function renderNew( $languagePairId ) {
@@ -288,4 +292,36 @@ class TestSetsPresenter extends BasePresenter {
 
 		$this->template->testSetNamesSortedPerDomain = $testSetNamesSortedPerDomain;
 	}
+
+	public function renderEnginesTree($engineId) {
+		$this->template->engineId = $engineId;
+		$engines = $this->enginesModel->getEngines()->fetchAssoc('id');
+
+		$engines[$engineId]['show'] = true;
+		$this->markChildren($engines, $engineId);
+		$this->markAncestors($engines, $engineId);
+		$this->template->engines = $engines;
+	}
+
+	private function markChildren(&$engines, $engineId) {
+		foreach ($engines as $key => $value) {
+			if ($engines[$key]['parent_id']) {
+				if ($engines[$key]['parent_id'] == $engineId) {
+					$engines[$key]['show'] = true;
+					$this->markChildren($engines, $key);
+				}
+			}
+		}
+	}
+
+	private function markAncestors(&$engines, $engineId) {
+		if ($engines[$engineId]['parent_id']) {
+			$parentId = $engines[$engineId]['parent_id'];
+			$engines[$parentId]['show'] = true;
+			$this->markAncestors($engines, $parentId);
+			$this->markChildren($engines, $parentId);
+		}
+	}
+
 }
+
