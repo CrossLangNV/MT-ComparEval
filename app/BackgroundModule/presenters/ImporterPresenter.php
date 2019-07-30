@@ -9,27 +9,26 @@ namespace BackgroundModule;
  */
 abstract class ImporterPresenter extends \Nette\Application\UI\Presenter {
 
-	protected $importer;
+    protected $importer;
 
-	public function renderImport( $folder ) {
+  	public function renderImport( $folder ) {
 
-    $folders = array(new \Folder( new \SplFileInfo( $folder ) ) );
+      $folders = array(new \Folder( new \SplFileInfo( $folder ) ) );
 
-    $engineId = end(explode('-', $folder));
-    $dataDir = dirname($folder, 2);
+      $engineId = end(explode('-', $folder));
+      $dataDir = dirname($folder, 2);
 
-    $taskDirs = array_filter(glob($dataDir . '/*/*-' . $engineId), 'is_dir');
-    foreach($taskDirs as $taskDir) {
-      if ($taskDir != $folder) {
-        $taskFolder = new \Folder( new \SplFileInfo( $taskDir ) );
-        array_push($folders, $taskFolder);
+      $taskDirs = array_filter(glob($dataDir . '/*/*-' . $engineId), 'is_dir');
+      foreach($taskDirs as $taskDir) {
+        if ($taskDir != $folder) {
+          $taskFolder = new \Folder( new \SplFileInfo( $taskDir ) );
+          array_push($folders, $taskFolder);
+        }
       }
-    }
 
-    var_dump($folders);
-		$this->importer->importFromFolders(  $folders );
+  		$this->importer->importFromFolders($folders);
 
-		$this->terminate();
-	}
+  		$this->terminate();
+  	}
 
-}
+  }

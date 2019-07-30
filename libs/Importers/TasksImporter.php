@@ -19,17 +19,15 @@ class TasksImporter extends Importer {
 	private $preprocessor;
 	private $metrics;
 	private $engines;
-	private $engineId;
 
-	public function __construct( TestSets $testSetsModel, Tasks $tasksModel, NGrams $ngramsModel, BootstrapSampler $sampler, Preprocessor $preprocessor, $metrics, Engines $enginesModel = null, $engineId = null ) {
+	public function __construct( TestSets $testSetsModel, Tasks $tasksModel, NGrams $ngramsModel, BootstrapSampler $sampler, Preprocessor $preprocessor, $metrics, Engines $engines ) {
 		$this->testSetsModel = $testSetsModel;
 		$this->ngramsModel = $ngramsModel;
 		$this->tasksModel = $tasksModel;
 		$this->sampler = $sampler;
 		$this->preprocessor = $preprocessor;
 		$this->metrics = $metrics;
-		$this->engines = $enginesModel;
-		$this->engineId = $engineId;
+		$this->engines = $engines;
 	}
 
 	protected function logImportStart( $config ) {
@@ -53,6 +51,7 @@ class TasksImporter extends Importer {
 
 	protected function processSentences( $config, $metadata, $rawSentences, $storeTaskData = true, $storeEngineData = false) {
 		$sentenceMetrics = array();
+
 		foreach( array( FALSE, TRUE ) as $isCaseSensitive ) {
 			$preprocessor = $this->preprocessor;
 			$sentences = new MapperIterator(
@@ -71,22 +70,21 @@ class TasksImporter extends Importer {
 				}
 
 				$metric = $metric[ 'class' ];
+
 		  	if ($storeTaskData) {
 			  	$metric->init();
 			  }
 
-
-				  $metrics[ $name ] = $metric;
+				$metrics[ $name ] = $metric;
 
 		  	if ($storeTaskData) {
 				  $sentenceMetrics[ $name ] = array();
-			}
+				}
+
 			}
 
-			var_dump(array_keys($metrics));
 			foreach( $sentences as $sentence ) {
 				foreach( $metrics as $name => $metric ) {
-					var_dump(sha1(spl_object_hash($metric)));
 					$sentenceMetrics[ $name ][] = $metric->addSentence( $sentence['test_set']['reference'], $sentence['translation'], $sentence['meta'] );
 				}
 			}
@@ -117,7 +115,8 @@ class TasksImporter extends Importer {
 					$this->logger->log( "Samples generated." );
 				}
 			}
-		var_dump("add_sentence");
+		}
+
 		$this->tasksModel->addSentences( $metadata['task_id'], $sentences, $sentenceMetrics );
 
 		if( $config[ 'precompute_ngrams' ] ) {
@@ -125,7 +124,6 @@ class TasksImporter extends Importer {
 			$this->ngramsModel->precomputeNgrams( $config['test_set']['id'], $metadata['task_id'] );
 			$this->logger->log( "N-grams precomputation done." );
 		}
-			}
 	}
 
 	protected function parseResources( Folder $folder, $config ) {
@@ -158,3 +156,5 @@ class TasksImporter extends Importer {
 	}
 
 }
+
+
