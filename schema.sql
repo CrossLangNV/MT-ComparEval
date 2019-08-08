@@ -44,10 +44,6 @@ CREATE TABLE "engines" (
 );
 
 
-
-  FOREIGN KEY ("language_pairs_id") REFERENCES "language_pairs" ("id") ON DELETE CASCADE
-
-
 CREATE TABLE "tasks" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "test_sets_id" integer NOT NULL,
@@ -55,9 +51,9 @@ CREATE TABLE "tasks" (
   "url_key" text NOT NULL UNIQUE,
   "description" text NULL,
   "visible" integer(0) NULL,
+  UNIQUE("test_sets_id","engines_id"),
   FOREIGN KEY ("test_sets_id") REFERENCES "test_sets" ("id") ON DELETE CASCADE,
-  FOREIGN KEY ("engines_id") REFERENCES "engines" ("id") ON DELETE CASCADE,
-  UNIQUE("test_sets_id","engines_id")
+  FOREIGN KEY ("engines_id") REFERENCES "engines" ("id") ON DELETE CASCADE
 );
 
 
@@ -100,9 +96,11 @@ INSERT INTO `metrics` (`id`, `name`) VALUES (19, 'TER');
 
 
 CREATE TABLE "translations_metrics" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   "translations_id" integer NOT NULL,
   "metrics_id" integer NOT NULL,
   "score" real NOT NULL,
+  UNIQUE("translations_id","metrics_id"),
   FOREIGN KEY ("translations_id") REFERENCES "translations" ("id") ON DELETE CASCADE,
   FOREIGN KEY ("metrics_id") REFERENCES "metrics" ("id") ON DELETE CASCADE
 );
@@ -112,6 +110,7 @@ CREATE TABLE "tasks_metrics" (
   "tasks_id" integer NOT NULL,
   "metrics_id" integer NOT NULL,
   "score" real NOT NULL,
+  UNIQUE("tasks_id","metrics_id"),
   FOREIGN KEY ("tasks_id") REFERENCES "tasks" ("id") ON DELETE CASCADE,
   FOREIGN KEY ("metrics_id") REFERENCES "metrics" ("id") ON DELETE CASCADE
 );

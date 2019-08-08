@@ -1000,6 +1000,7 @@ function Sentences( $scope, $http ) {
 		<li><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#confirmed" data-toggle="tab">Confirmed n-grams</a></li>
 		<li><a href="#unconfirmed" data-toggle="tab">Unconfirmed n-grams</a></li>
+		<li><a href="#download" data-toggle="tab">Download</a></li>
 	</ul>
 
 	<div class="tab-content">
@@ -1202,6 +1203,36 @@ function Sentences( $scope, $http ) {
 			</div>
 		</div>
 
+		<div class="tab-pane" id="download">
+			<h3>Download</h3>
+			<form class="form-horizontal" method="POST" action="{plink Api:Tasks:downloadBestOrWorstSentences}" enctype="multipart/form-data">
+				<p style="margin-top: 20px;">Download
+					<input type="text" id="nr" name="nr" value="100" style="width:30px;">
+					sentences with the
+					<select id="highest-or-lowest" name="highest-or-lowest" style="width:100px;">
+					  	<option value="highest">highest</option>
+					  	<option value="lowest">lowest</option>
+					</select>
+					<select ng-model="metricForDownload" id="metrics-for-download" name="metric-for-download" ng-options="metric for metric in metrics" ng-init="metricForDownload = 'BLEU'" style="width:100px;">
+					</select>
+					diff between
+					<select id="compare-to" name="compare-to">
+							<option value="the-two-tasks">{{ taskEngineNames[ task0 ] }} and {{ taskEngineNames[ task1 ] }}</option>
+							<option value="first-task-and-reference">{{ taskEngineNames[ task0 ] }} and reference</option>
+							<option value="second-task-and-reference">{{ taskEngineNames[ task1 ] }} and reference</option>
+					</select>
+					as
+					<select id="format" name="format" style="width:50px;">
+							<option>csv</option>
+							<option>xliff</option>
+					</select>
+					<button type="submit" class="btn btn-success">&#10515;</button>
+					<input type="hidden" name="first-task-id" value="{$taskIds[0]}"" />
+					<input type="hidden" name="second-task-id" value="{$taskIds[1]}"" />
+				</p>
+			</form>
+		</div>
+
 		<div
 			class="tab-pane active"
 			id="sentences"
@@ -1331,7 +1362,6 @@ function Sentences( $scope, $http ) {
 				You are displaying sentences with {{ type }} n-gram <strong>{{ ngram }}</strong>.
 				<a ng-click="loadAllSentences()">Show all senteces</a>
 			</div>
-
 
 			<table
 				ng-repeat="sentence in sentences | orderBy:predicate:!asc"

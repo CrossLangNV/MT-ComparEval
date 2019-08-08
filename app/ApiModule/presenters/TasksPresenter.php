@@ -10,12 +10,16 @@ class TasksPresenter extends BasePresenter {
 	private $tasksModel;
 	private $testSetsModel;
 	private $enginesModel;
+	private $sentencesModel;
+	private $metricsModel;
 
-	public function __construct( \Nette\Http\Request $httpRequest, \Tasks $tasksModel, \TestSets $testSetsModel, \Engines $enginesModel ) {
+	public function __construct( \Nette\Http\Request $httpRequest, \Tasks $tasksModel, \TestSets $testSetsModel, \Engines $enginesModel, \Sentences $sentencesModel, \Metrics $metricsModel ) {
 		parent::__construct( $httpRequest );
 		$this->tasksModel = $tasksModel;
 		$this->testSetsModel = $testSetsModel;
 		$this->enginesModel = $enginesModel;
+		$this->sentencesModel = $sentencesModel;
+		$this->metricsModel = $metricsModel;
 	}
 
 	public function renderDefault( $testSetId ) {
@@ -71,6 +75,131 @@ class TasksPresenter extends BasePresenter {
 			$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
 		}
 
+	}
+
+	public function renderDownloadBestOrWorstSentences() {
+		$firstTaskId = $this->getPostParameter('first-task-id');
+		$secondTaskId = $this->getPostParameter('second-task-id');
+		$metricNr = $_POST['metric-for-download'];
+		$nrOfSentences = $this->getPostParameter('nr');
+		$highestOrLowest = $this->getPostParameter('highest-or-lowest');
+		$compareTo = $this->getPostParameter('compare-to');
+		$format = $this->getPostParameter('format');
+
+		$enabledMetrics = $this->metricsModel->getEnabledMetrics();
+		$metricName = $enabledMetrics[$metricNr];
+
+		$order = 'desc';
+		if ($highestOrLowest == 'lowest') {
+			$order = 'asc';
+		}
+
+		// get the results
+		$sentences;
+		if ($compareTo == "first-task-and-reference") {
+			$sentences = $this->sentencesModel->getTranslationsOfOneTask( $firstTaskId, 0, $nrOfSentences, $metricName, $order );
+		}
+		else if ($compareTo == "second-task-and-reference") {
+			$sentences = $this->sentencesModel->getTranslationsOfOneTask( $secondTaskId, 0, $nrOfSentences, $metricName, $order );
+		}
+		else {
+			$taskIds = array();
+			array_push($taskIds, $firstTaskId);
+			array_push($taskIds, $secondTaskId);
+			$sentences = $this->sentencesModel->getFullSentencesSortedByDiffMetric($taskIds, 0, $nrOfSentences, $metricName, $order);
+		}
+
+		if ($format == 'xliff') {
+			$this->writeSentencesToXliff($sentences, $compareTo);
+		}
+		else {
+			$this->writeSentencesToCsv($sentences, $firstTaskId, $secondTaskId, $metricName, $compareTo);
+		}
+	}
+
+	private function writeSentencesToCsv($sentences, $firstTaskId, $secondTaskId, $metricName, $compareTo) {
+		$firstTask = $this->tasksModel->getTaskById($firstTaskId);
+		$secondTask = $this->tasksModel->getTaskById($secondTaskId);
+
+		$output = fopen( "php://output", "w" ) or die( "Can't open php://output" );
+		header( "Content-Type:application/csv" );
+		header( "Content-Disposition:attachment;filename=sentences.csv" );
+
+		// make the header
+		$header = array();
+		if ($compareTo == "first-task-and-reference" || $compareTo == "second-task-and-reference") {
+			array_push($header, "source,reference,translation," . $metricName);
+		}
+		else {
+			$firstEngine = $this->enginesModel->getEngineById($firstTask['engines_id']);
+			$firstEngineName = $firstEngine['name'];
+			$secondEngine = $this->enginesModel->getEngineById($secondTask['engines_id']);
+			$secondEngineName = $secondEngine['name'];
+			array_push($header, "source,reference,translation-by-" . $firstEngineName . "," . $firstEngineName . "-" . $metricName . ",translation-by-" . $secondEngineName . "," . $secondEngineName . "-" . $metricName . "," . $metricName . "-diff");
+		}
+
+		// put results into the file
+		$data = array();
+		foreach( $sentences as $sentence ) {
+			$row = array();
+			$rowString = '"' . $sentence['source'] . '"';
+			$rowString .= ',"' . $sentence['reference'] . '"';
+			if ($compareTo == "the-two-tasks") {
+				$rowString .= ',"' . $sentence['translations'][0]['text'] . '"';
+				$rowString .= ',' . $sentence['translations'][0]['metrics'][$metricName];
+				$rowString .= ',"' . $sentence['translations'][1]['text'] . '"';
+				$rowString .= ',' . $sentence['translations'][1]['metrics'][$metricName];
+				$diff = $sentence['translations'][0]['metrics'][$metricName] - $sentence['translations'][1]['metrics'][$metricName];
+				$rowString .= ',' . $diff;
+			}
+			else {
+				$rowString .= ',"' . $sentence['translation'] . '"';
+				$rowString .= ',"' . $sentence['score'] . '"';
+			}
+			array_push($row, $rowString);
+			$data[] = $row;
+		}
+
+		fputcsv( $output, $header );
+		foreach( $data as $row ) {
+			fputcsv( $output, $row );
+		}
+
+		fclose( $output ) or die( "Can't close php://output" );
+		$this->terminate();
+	}
+
+	private function writeSentencesToXliff($sentences, $compareTo) {
+		$output = fopen( "php://output", "w" ) or die( "Can't open php://output" );
+		header('Content-Type: application/xml; charset=utf-8');
+		header( "Content-Disposition:attachment;filename=sentences.xliff" );
+
+		fputs($output, '<xliff version="1.2">');
+		fputs($output, '<file>');
+		fputs($output, '<header>');
+		fputs($output, '</header>');
+		fputs($output, '<body>');
+
+		// put results into the file
+		$data = array();
+		foreach( $sentences as $key => $sentence ) {
+			fputs( $output, '<trans-unit id="' . $key . '"">' );
+			fputs( $output, '<source>' . $sentence['source'] . '</source>' );
+			if ($compareTo == "the-two-tasks") {
+				fputs($output, '<target>' . $sentence['translations'][0]['text'] . '</target>');
+			}
+			else {
+				fputs($output, '<target>' . $sentence['translation'] . '</target>');
+			}
+			fputs($output, '</trans-unit>');
+		}
+
+		fputs($output, '</body>');
+		fputs($output, '</file>');
+		fputs($output, '</xliff>');
+
+		fclose( $output ) or die( "Can't close php://output" );
+		$this->terminate();
 	}
 
 }

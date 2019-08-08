@@ -10,12 +10,14 @@ class TasksPresenter extends BasePresenter {
 	private $testSetsModel;
 	private $metricsModel;
 	private $enginesModel;
+	private $sentencesModel;
 
-	public function __construct( Tasks $tasksModel, TestSets $testSetsModel, Metrics $metricsModel, Engines $enginesModel ) {
+	public function __construct( Tasks $tasksModel, TestSets $testSetsModel, Metrics $metricsModel, Engines $enginesModel, Sentences $sentencesModel ) {
 		$this->tasksModel = $tasksModel;
 		$this->testSetsModel = $testSetsModel;
 		$this->metricsModel = $metricsModel;
 		$this->enginesModel = $enginesModel;
+		$this->sentencesModel = $sentencesModel;
 	}
 
 	public function renderList( $testSetId ) {

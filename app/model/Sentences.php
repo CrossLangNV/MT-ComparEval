@@ -31,12 +31,52 @@ class Sentences {
 		return $this->getSentencesWithIds( $sentenceIds, $taskIds );
 	}
 
+	public function getFullSentencesSortedByDiffMetric( $taskIds, $offset, $limit, $orderBy, $order ) {
+		$sentenceIds = $this->getSentenceIdsForRequest( $taskIds, $offset, $limit, $orderBy, $order );
+		$sentences = $this->getSentencesWithIds( $sentenceIds, $taskIds );
+
+		// sort the sentences by the ids in $sentenceIds
+		$sortedSentences = array_flip($sentenceIds);
+		foreach($sentences as $sentence) {
+			$id = $sentence['sentence_id'];
+			$sentenceCopy = $sentence;
+			$sortedSentences[$id] = $sentenceCopy;
+		}
+
+		return $sortedSentences;
+	}
 
 	public function getSentencesByIds( $sentenceIds, $taskIds, $offset, $limit ) {
 		$sentenceIds = $this->sortSentencesIds( $sentenceIds );
 		$sentenceIds = $this->sliceResult( $sentenceIds, $offset, $limit );
 
 		return $this->getSentencesWithIds( $sentenceIds, $taskIds );
+	}
+
+	public function getTranslationsOfOneTask($taskId, $offset, $limit, $orderBy, $order) {
+		$metricsId = $this->metrics->getMetricsId( $orderBy );
+
+		$translationData = $this->db
+			->table( 'translations_metrics' )
+			->select( 'score, translations.sentences_id, translations.text' )
+			->where( 'metrics_id', $metricsId )
+			->where( 'translations.tasks_id', $taskId )
+			->order( 'score ' . strtoupper( $order ) )
+			->limit( $limit, $offset )
+			->fetchPairs( 'sentences_id');
+
+		$sourceData = $this->db->table('sentences')->where('id', array_keys($translationData))->fetchPairs('id');
+
+		$results = array();
+		foreach ($translationData as $sentenceId => $data) {
+			$result = array();
+			$result['score'] = $data['score'];
+			$result['translation'] = $data['text'];
+			$result['source'] = $sourceData[$sentenceId]['source'];
+			$result['reference'] = $sourceData[$sentenceId]['reference'];
+			array_push($results, $result);
+		}
+		return($results);
 	}
 
 	private function sortSentencesIds( $sentenceIds ) {
@@ -52,6 +92,7 @@ class Sentences {
 	private function getSentencesWithIds( $sentenceIds, $taskIds ) {
 		$rows = array();
 		foreach( $this->db->table( 'sentences' )->where( 'id', $sentenceIds ) as $sentence ) {
+
 			$row = array();
 			$row[ 'sentence_id' ] = $sentence[ 'id' ];
 			$row[ 'source' ] = $sentence[ 'source' ];

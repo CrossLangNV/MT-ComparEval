@@ -35,6 +35,7 @@ class RouterFactory
 			$router[] = new Route('api/sentences/by-id', 'Api:Sentences:byId');
 			$router[] = new Route('api/tasks', 'Api:Tasks:default');
 			$router[] = new Route('api/tasks/upload', 'Api:Tasks:upload');
+			$router[] = new Route('api/tasks/download-best-or-worst-sentences', 'Api:Tasks:downloadBestOrWorstSentences');
 			$router[] = new Route('api/testsets/upload', 'Api:TestSets:upload');
 			$router[] = new Route('api/testsets/status/<id>', 'Api:TestSets:status');
 			$router[] = new Route('api/testsets/delete/<id>', 'Api:TestSets:delete');

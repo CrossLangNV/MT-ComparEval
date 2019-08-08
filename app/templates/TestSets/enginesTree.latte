@@ -29,12 +29,17 @@
         }
         nodes.push(node);
         if (engine.parent_id != null && engine.parent_id != 0) {
+          $isImprovement = false;
+          if (engine['bleu'] > {$engines}[engine.parent_id]['bleu']) {
+            $isImprovement = true;
+          }
           edges.push({
             from: engine.parent_id,
             to: engine.id,
             color: {
               color: 'rgba(120, 120, 120, 1)'
-            }
+            },
+            dashes: $isImprovement
           });
         }
       }
@@ -74,7 +79,8 @@
             type: "arrow"
           }
         },
-        chosen: false
+        chosen: false,
+        dashes: true
       }
     };
     network = new vis.Network(container, data, options);
