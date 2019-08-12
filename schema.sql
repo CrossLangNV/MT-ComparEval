@@ -62,6 +62,7 @@ CREATE TABLE "translations" (
   "tasks_id" integer NOT NULL,
   "sentences_id" integer NOT NULL,
   "text" text NOT NULL,
+  UNIQUE("tasks_id","sentences_id") ON CONFLICT IGNORE,
   FOREIGN KEY ("tasks_id") REFERENCES "tasks" ("id") ON DELETE CASCADE,
   FOREIGN KEY ("sentences_id") REFERENCES "sentences" ("id") ON DELETE CASCADE
 );
