@@ -1,13 +1,13 @@
 var getNGrams = function( sentence ) {
 	var tokens = tokenize( sentence );
 	var ngrams = {};
-	
+
 	ngrams[1] = tokens;
 	for( var i = 1; i < 4; i++ ) {
 		ngrams[i+1] = [];
 
 		for( var j = 0; i + j < tokens.length; j++ ) {
-			ngrams[i+1].push( ngrams[i][j] + " " + tokens[i+j] );	
+			ngrams[i+1].push( ngrams[i][j] + " " + tokens[i+j] );
 		}
 	}
 
@@ -23,12 +23,12 @@ var getMatchingPositions = function( referenceNGrams, translationNGrams ) {
 	var matchingPositions = globalAlignment( referenceNGrams[1], translationNGrams[1] );
 
 	var matchingInReference = guessAllMatchingPositions( matchingNGrams, referenceNGrams, matchingPositions.reference );
-	var matchingInTranslation = guessAllMatchingPositions( matchingNGrams, translationNGrams, matchingPositions.translation ); 
+	var matchingInTranslation = guessAllMatchingPositions( matchingNGrams, translationNGrams, matchingPositions.translation );
 
 	return {
 		"reference": matchingInReference,
 		"translation": matchingInTranslation
-	}; 
+	};
 }
 
 
@@ -67,9 +67,9 @@ var guessPositionsOfMatching = function( matching, all, alignedPositions ) {
 		for( var key in matchingOccurences[i] ) {
 			for( var pos in allPositions[i][key] ) {
 				for( var j = 0; j < i; j++ ) {
-					var index = allPositions[i][key][pos] + j; 
+					var index = allPositions[i][key][pos] + j;
 					tmpScore[index] = idOrDefault( tmpScore[index], 0 ) + idOrDefault( alignedPositions[index], 0 ) + 1;
-				}	
+				}
 			}
 		}
 
@@ -87,8 +87,8 @@ var guessPositionsOfMatching = function( matching, all, alignedPositions ) {
 						return {
 							"ngram": key,
 							"position": position,
-							"score": localScore 
-						};	
+							"score": localScore
+						};
 					} )
 					.sort( function( a, b ) {
 						return b.score - a.score;
@@ -102,14 +102,14 @@ var guessPositionsOfMatching = function( matching, all, alignedPositions ) {
 			// UPDATE SCORE FOR EACH NGRAM
 			for( var pos in positions[i][key] ) {
 				for( var j = 0; j < i; j++ ) {
-					var index = positions[i][key][pos] + j; 
+					var index = positions[i][key][pos] + j;
 
 					score[index] = idOrDefault( score[index], 0 ) + 1;
-				}	
+				}
 			}
 		}
 	}
-	
+
 	return positions;
 }
 
@@ -196,11 +196,11 @@ var getNotMatchingNGrams = function( reference, translation ) {
 var getImproving = function( reference, translations ) {
 	var matching = translations.map( function( translation ) { return getMatchingNGrams( reference, translation ); } );
 	var commonMatching = intersection( matching[0], matching[1] );
-	
+
 	var improving = [];
 	translations.forEach( function( translation, translationNumber ) {
 		var matchingPositions = globalAlignment( reference[1], translation[1] );
-		var matchingInOneTranslation = guessAllMatchingPositions( matching[ translationNumber ], translation, matchingPositions.translation ); 
+		var matchingInOneTranslation = guessAllMatchingPositions( matching[ translationNumber ], translation, matchingPositions.translation );
 		var matchingInBothTranslations = guessAllMatchingPositions( commonMatching, translation, matchingPositions.translation );
 		var currentImproving = [];
 		for( var i in matchingInOneTranslation ) {
@@ -208,24 +208,27 @@ var getImproving = function( reference, translations ) {
 		}
 
 		improving.push( currentImproving );
-	} ); 
+	} );
 
 	return improving;
 }
 
 var getWorsening = function( reference, translations ) {
-	var matching = translations.map( function( translation ) { return getMatchingNGrams( reference, translation ); } );
-	var notMatching = translations.map( function( translation ) { return getNotMatchingNGrams( reference, translation ); } );
+	var twoTranslations = translations.slice(0, 2);
+	console.log(translations);
+
+	var matching = twoTranslations.map( function( translation ) { return getMatchingNGrams( reference, translation ); } );
+	var notMatching = twoTranslations.map( function( translation ) { return getNotMatchingNGrams( reference, translation ); } );
 	var commonNotMatching = intersection( notMatching[0], notMatching[1] );
-	
+
 	var worsening = [];
-	translations.forEach( function( translation, translationNumber ) {
-		var notMatchingPositions = globalAlignment( translations[ 1 - translationNumber ][1], translation[1] );
-		var notMatchingInOneTranslation = guessAllMatchingPositions( notMatching[ translationNumber ], translation, notMatchingPositions.translation ); 
+	twoTranslations.forEach( function( translation, translationNumber ) {
+		var notMatchingPositions = globalAlignment( twoTranslations[ 1 - translationNumber ][1], translation[1] );
+		var notMatchingInOneTranslation = guessAllMatchingPositions( notMatching[ translationNumber ], translation, notMatchingPositions.translation );
 		var notMatchingInBothTranslations = guessAllMatchingPositions( commonNotMatching, translation, notMatchingPositions.translation );
 
 		var matchingPositions = globalAlignment( reference[1], translation[1] );
-		var matchingInOneTranslation = guessAllMatchingPositions( matching[ translationNumber ], translation, matchingPositions.translation ); 
+		var matchingInOneTranslation = guessAllMatchingPositions( matching[ translationNumber ], translation, matchingPositions.translation );
 
 		var currentImproving = [];
 		for( var i in notMatchingInOneTranslation ) {
@@ -233,7 +236,7 @@ var getWorsening = function( reference, translations ) {
 		}
 
 		worsening.push( currentImproving );
-	} ); 
+	} );
 
 	return worsening;
 }
@@ -245,7 +248,7 @@ var getWorsening = function( reference, translations ) {
 var intersection = function( setA, setB ) {
 	return iterateElements( setA, setB, function( aCount, bCount ) {
 		return Math.min( aCount, bCount );
-	} ); 
+	} );
 }
 
 var diff = function( setA, setB ) {
@@ -296,7 +299,7 @@ var getPositions = function( set ) {
 			positions[i][set[i][j]] = idOrDefault( positions[i][set[i][j]], [] );
 			positions[i][set[i][j]].push( parseInt( j ) );
 		}
-	}	
+	}
 
 	return positions;
 }

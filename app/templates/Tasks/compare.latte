@@ -877,7 +877,8 @@ function Sentences( $scope, $http ) {
 			);
 
 			if( sentence.translations.length > 1 ) {
-				sentence.translations.forEach( function( translation, translationNumber ) {
+			var twoTranslations = sentence.translations.slice(0, 2);
+				twoTranslations.forEach( function( translation, translationNumber ) {
 					[1,2,3,4].forEach( function( length ) {
 						translationNGrams[ translationNumber ][ length ].forEach( function( ngram, index ) {
 							var isTokenInImproving = false;
