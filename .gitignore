@@ -11,3 +11,5 @@ storage/*
 !web.config
 app/config/config.local.neon
 app/database.test
+
+.vscode/

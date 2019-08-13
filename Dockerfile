@@ -20,6 +20,12 @@ RUN sqlite3 storage/database < schema.sql
 RUN echo 'max_execution_time=1200' >> /usr/local/etc/php/conf.d/timeout.ini
 RUN echo 'memory_limit=512M' >> /usr/local/etc/php/conf.d/memory.ini
 
+# XDebug
+RUN pecl install -f xdebug \
+&& echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini;
+
+ENV XDEBUG_CONFIG="remote_host=host.docker.internal remote_port=9001 remote_enable=1"
+
 COPY . /
 RUN chmod +x bin/watchAndServe.sh
 
