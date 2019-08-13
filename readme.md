@@ -147,3 +147,43 @@ For deleting experiments via API use `api/experiments/delete/<id>`.
 * Find out task id, e.g. `sqlite3 storage/database "SELECT id, name FROM tasks WHERE experiments_id=XYZ"`;
 * Delete task: `sqlite3 storage/database "sqlite3 storage/database "DELETE FROM tasks WHERE id=ABC";"`
 * Restart watcher
+
+## Run with docker
+
+Build the image:
+
+```
+docker build --tag mtcompareval .
+```
+
+Run the image with persistent storage:
+
+```
+docker run -d --rm  -v $SOMEPATH/data:/data -v $SOMEPATH/storage:/storage -v $SOMEPATH/log:/log -p 8080:8080 mtcompareval
+```
+Make sure you have a sqlite3 "database" located under $SOMEPATH/storage. If not you can create one with:
+
+```
+sqlite3 $SOMEPATH/storage/database < schema.sql
+```
+
+And that you have the these folders:
+
+```
+mkdir -p $SOMEPATH/hjerson
+mkdir -p $SOMEPATH/precomputed_ngrams
+mkdir -p $SOMEPATH/ter
+```
+
+Overriding the config file:
+
+```
+docker run -d --rm  \
+-v $SOMEPATH/data:/data \
+-v $SOMEPATH/storage:/storage \
+-v $SOMEPATH/log:/log \
+-v $SOMEPATH/config.neon:/app/config/config.neon \
+-p 8080:8080 mtcompareval
+```
+
+Go to http://localhost:8080
