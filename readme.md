@@ -148,7 +148,23 @@ For deleting experiments via API use `api/experiments/delete/<id>`.
 * Delete task: `sqlite3 storage/database "sqlite3 storage/database "DELETE FROM tasks WHERE id=ABC";"`
 * Restart watcher
 
-## Run with docker
+## Run with docker-compose
+
+In case of first run: seed the database on your host machine:
+```
+sqlite3 storage/database < schema.sql
+```
+
+Build and run as daemon with:
+```
+docker-compose up -d
+```
+
+Docker compose maps the host volumes storage/ log/ and data/ to their corresponding container volumes
+
+Go to http://localhost:8080
+
+## (alternative) Run with docker
 
 Build the image:
 
