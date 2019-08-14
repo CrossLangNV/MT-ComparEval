@@ -6,9 +6,11 @@
     <h2>
       {$languagePair['source_language']}-{$languagePair['target_language']}
         <div style="display:inline-block;font-size: 59%;">
+          {if $showAdministration }
           <a href="{plink TestSets:deleteLanguagePair $languagePair['id']}">
             &#x1F5D1;
           </a>
+          {/if}
         </div>
     </h2>
     <table class="table table-bordered" style="margin-bottom: 10px;">
@@ -20,16 +22,20 @@
               <th style="position:relative;">
                 <a href="{plink TestSets:enginesTree $engine['id']}">{$engine['name']}</a>
                 <div style="position:absolute;top:10px;right:3px;">
+                  {if $showAdministration }
                   <a href="{plink TestSets:deleteEngine $engine['id']}">
                     &#x1F5D1;
                   </a>
+                  {/if}
                 </div>
               </th>
             {/if}
           {/foreach}
         {/if}
         <td>
+          {if $showAdministration }
           <a href="{plink TestSets:engine $languagePair['id']}" class="btn btn-default">Add Engine</a>
+          {/if}
         </td>
       </tr>
       {if count($testSets)}
@@ -39,34 +45,45 @@
               <th style="position:relative;">
                 <a href="{plink Tasks:list $testSet['id']}">{$testSet['name']}</a>
                 <div style="position:absolute;top:10px;right:24px;transform:scaleX(-1);">
+                  {if $showAdministration }
                   <a href="{plink TestSets:edit $testSet['id']}" style="color:black;">
                     &#9998;
                   </a>
+                  {/if}
                 </div>
                 <div style="position:absolute;top:10px;right:3px;">
+                  {if $showAdministration }
                   <a href="{plink TestSets:delete $testSet['id']}">
                     &#x1F5D1;
                   </a>
+                  {/if}
                 </div>
               </th>
               {foreach $engines as $engine}
                 {if $engine['language_pairs_id'] == $languagePair['id']}
                   {if $tableData[$languagePair['id']][$testSet['id']][$engine['id']] == "0"}
                     <td>
-                      <a href="{plink Tasks:new $testSet['id'], $engine['id']}" class="btn btn-default">Add Task</a>
+                      {if $showAdministration }
+                        <a href="{plink Tasks:new $testSet['id'], $engine['id']}" class="btn btn-default">Add Task</a>
+                      {/if}
                     </td>
+
                   {else}
                     <td style="position:relative;">
                       {$tableData[$languagePair['id']][$testSet['id']][$engine['id']]['description']}
                       <div style="position:absolute;top:10px;right:24px;transform:scaleX(-1);">
+                        {if $showAdministration }
                         <a href="{plink Tasks:edit $tableData[$languagePair['id']][$testSet['id']][$engine['id']]['id']}" style="color:black;">
                           &#9998;
                         </a>
+                        {/if}
                       </div>
                       <div style="position:absolute;top:10px;right:3px;">
+                        {if $showAdministration }
                         <a href="{plink Tasks:delete taskId => $tableData[$languagePair['id']][$testSet['id']][$engine['id']]['id']}">
                           &#x1F5D1;
                         </a>
+                        {/if}
                       </div>
                     </td>
                   {/if}
@@ -79,7 +96,9 @@
       {/if}
       <tr>
         <td>
+          {if $showAdministration }
           <a href="{plink TestSets:new $languagePair['id']}" class="btn btn-default">Add Test Set</a>
+          {/if}
         </td>
         {foreach $engines as $engine}
           {if $engine['language_pairs_id'] == $languagePair['id']}
