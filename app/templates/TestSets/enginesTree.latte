@@ -81,6 +81,11 @@
         },
         chosen: false,
         dashes: true
+      },
+      physics: {
+        barnesHut: {
+          avoidOverlap: 1
+        }
       }
     };
     network = new vis.Network(container, data, options);

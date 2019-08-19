@@ -70,6 +70,11 @@
         },
         chosen: false,
         dashes: true
+      },
+      physics: {
+        barnesHut: {
+          avoidOverlap: 1
+        }
       }
     };
     network = new vis.Network(container, data, options);
@@ -85,6 +90,6 @@
 
 {block #content}
 
-<h1 style="margin-bottom:50px;">Parent-child tree of {$engine['name']} engine</h1>
+<h1 style="margin-bottom:50px;">Parent-child tree of all engines</h1>
 
 <div id="tree" style="min-height:500px;"></div>
