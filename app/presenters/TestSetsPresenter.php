@@ -303,6 +303,11 @@ class TestSetsPresenter extends BasePresenter {
 		$this->template->engines = $engines;
 	}
 
+	public function renderEnginesTreeGlobal() {
+		$engines = $this->enginesModel->getEngines()->fetchAssoc('id');
+		$this->template->engines = $engines;
+	}
+
 	private function markChildren(&$engines, $engineId) {
 		foreach ($engines as $key => $value) {
 			if ($engines[$key]['parent_id']) {
