@@ -32,11 +32,11 @@
             {/if}
           {/foreach}
         {/if}
-        <td>
-          {if $showAdministration }
-          <a href="{plink TestSets:engine $languagePair['id']}" class="btn btn-default">Add Engine</a>
-          {/if}
-        </td>
+        {if $showAdministration }
+          <td>
+            <a href="{plink TestSets:engine $languagePair['id']}" class="btn btn-default">Add Engine</a>
+          </td>
+        {/if}
       </tr>
       {if count($testSets)}
         {foreach $testSets as $testSet}
@@ -89,24 +89,26 @@
                   {/if}
                 {/if}
               {/foreach}
-              <td></td>
+              {if $showAdministration }
+                <td></td>
+              {/if}
             </tr>
           {/if}
         {/foreach}
       {/if}
-      <tr>
-        <td>
-          {if $showAdministration }
-          <a href="{plink TestSets:new $languagePair['id']}" class="btn btn-default">Add Test Set</a>
-          {/if}
-        </td>
-        {foreach $engines as $engine}
-          {if $engine['language_pairs_id'] == $languagePair['id']}
-            <td></td>
-          {/if}
-        {/foreach}
-        <td></td>
-      </tr>
+      {if $showAdministration }
+        <tr>
+          <td>
+            <a href="{plink TestSets:new $languagePair['id']}" class="btn btn-default">Add Test Set</a>
+          </td>
+          {foreach $engines as $engine}
+            {if $engine['language_pairs_id'] == $languagePair['id']}
+              <td></td>
+            {/if}
+          {/foreach}
+          <td></td>
+        </tr>
+      {/if}
     </table>
     <a href="{plink TestSets:graphicalComparison $languagePair['id']}" class="btn btn-default" style="margin-bottom:40px;">View graphical comparison</a>
   {/foreach}
