@@ -34,7 +34,7 @@ There is the possibility to enable additional metrics. At the moment, the tool "
 
 ### Ubuntu/Debian Linux
 
-MT-ComparEval has been designed and tested on Ubuntu and Debian systems. Such an operating system is therefore suggested. 
+MT-ComparEval has been designed and tested on Ubuntu and Debian systems. Such an operating system is therefore suggested.
 
 In order to be able to run MT-ComparEval several dependencies have to be installed.
 Namely, PHP version 5.4 and Sqlite 3.
@@ -62,7 +62,7 @@ Just follow the instructions (open the url in your browser, generate the token a
  - Using the Windows Explorer, go to `C:\` and create a directory `tools`. Download [MT-Compareval](https://github.com/choko/MT-ComparEval/archive/master.zip), open the zip file and copy the folder MT-ComparEval-master into `C:\tools` directory. Rename the folder from `MT-ComparEval-master` to `MT-ComparEval`.
  - Using the Windows Explorer, go to `C:\tools\MT-ComparEval\bin\win` and double click on `install` or `install.bat`. This will perform the installation. During the installation you may be asked to enter GitHub OAuth token. Just follow the instructions (open the url in your browser, generate the token and enter it).
  - If you have chosen different paths in the above steps, you have to edit install.bat and watcher.bat to reflect the accurate entries.
- 
+
 
 # Running MT-ComparEval
 
@@ -76,7 +76,7 @@ To start MT-ComparEval two processes have to be run:
  - `bin/watcher.sh` which monitors folder `data` for new experiments and tasks (the `data` folder must exist before you run `bin/watcher.sh`.)
 
 ### Windows
- - Open Windows Explorer and navigate to C:\tools\MT-ComparEval\bin\win. 
+ - Open Windows Explorer and navigate to C:\tools\MT-ComparEval\bin\win.
  - Double-click on `server` or `server.bat` to start the web server. Leave the window open
  - Double-click on `watcher` or `watcher.bat` to start the watcher. Leave this window open too
  - Optionally: right click on these programs, create shortcuts and move the shortcuts on your desktop or in any convenient menu entry.
@@ -203,3 +203,54 @@ docker run -d --rm  \
 ```
 
 Go to http://localhost:8080
+
+# The updated version of MT-ComparEval
+
+In order to accomodate the needs of researchers, MT-ComparEval has been adapted for a broader range of use cases.
+
+## What has been added or changed?
+
+### Experiment -> Test Set
+
+The term experiment is no longer used in the new version of this tool. Instead, there are four core terms:
+- language pair;
+- test set;
+- engine;
+- task.
+
+The meening of these terms and their usage can be clarified by exploring this example:
+http://mtcompareval-ng.crosslang.com:8051/matrix
+
+As one can see in the example, multiple language pairs can be added. Per language pair, one can add multiple test sets. Also, per language pair, one can add multiple engines. Test sets and engines of each language pair are presented in a table. Each cell of this table corresponds with a task. A task is the translation of the given test set by the given engine.
+
+### The graphical comparison per language pair view
+
+Below each language pair, a button has been added to grant access to the graphical comparison view. In this view, the engines that correspond to the chosen language pair are compared to each other, based upon the BLEU scores.
+
+The following comparisons are provided. For each comparison, a graph and a table are visible.
+- BLEU scores per engine per test set;
+- BLEU score delta with a selected engine;
+- BLEU scores per engine per test set, sorted per domain;
+- BLEU score delta with a selected engine, sorted per domain.
+
+### The engine parent-child hierarchy view
+
+Another new view demonstrates the relationships between engines.
+
+This view can be accessed by pressing the "View global engine hierarchy" button on the overview page. It can also be accessed by clicking an engine in one of the tables. In this case, only the engines related to the engine in question are displayed.
+
+What one sees is a collection of nodes. Each node represents an engine. Engine name and BLEU score are displayed on the node.
+If a parent-child relationship exists between two engines, they are connected by an arrow from the parent to the child. If the child's BLEU score is higher than the parent's, the arrow line is solid. In the other case, it is dashed.
+
+### Possibility to download sentences that differ most/least between two engines or engine and reference
+
+For each task, a possibility has been provided to download a selected number of sentences that differ most/least from the translation by another engine or from the reference.
+The following parameters can be provided by the user:
+- the number of sentences to download;
+- whether one wants to download the most or the least differing sentences;
+- the metric the comparison is based upon;
+- to what the translation should be compared (reference or a translation by a different engine);
+- the file format in which to download the sentences: CSV or XLIFF.
+
+This view can be accessed by navigating to <application-address>/tasks/<first-task-id>-<second-task-id>/compare, and selecting the Download tab.
+
