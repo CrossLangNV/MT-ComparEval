@@ -32,6 +32,24 @@ There is the possibility to enable additional metrics. At the moment, the tool "
 
 ## Basic Installation
 
+### Docker (recommended)
+
+Prerequisites:
+- [Docker](https://docs.docker.com/install/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+Clone the application:
+```
+git clone https://github.com/CrossLangNV/MT-ComparEval
+```
+
+Build:
+```
+docker-compose build
+```
+
+Docker Compose uses volumes to map the files on the host to the container, data is persisted on the host.
+
 ### Ubuntu/Debian Linux
 
 MT-ComparEval has been designed and tested on Ubuntu and Debian systems. Such an operating system is therefore suggested.
@@ -67,6 +85,50 @@ Just follow the instructions (open the url in your browser, generate the token a
 # Running MT-ComparEval
 
 ## Start the program
+
+### Docker
+Run as daemon:
+```
+docker-compose up -d
+```
+
+Application starts on [localhost:8080](http://localhost:8080).
+
+#### Development
+
+Recommended tools for development and debugging:
+- [Visual Studio Code](https://code.visualstudio.com/docs/setup/setup-overview) with extensions:
+  - Docker
+  - Nette Latte + Neon
+  - PHP Debug
+
+#### Enable remote debugging with XDebug:
+
+- First install PHP on your local machine (version 7.1 recommended)
+- Installing the PHP Debug extension in vs code will normally create a file `.vscode/launch.json`, edit it to:
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Listen for XDebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9001,
+            "pathMappings": {
+                "/app": "${workspaceFolder}/"
+            },
+        }
+    ]
+}
+```
+
+The `XDEBUG_CONFIG` environment variable is set in the Dockerfile
+- `remote_port` should correspond with the port in `.vscode/launch.json`
+- `remote_host` needs to be changed if host is Linux
+
+Mark your breakpoints (click left of the line number) and click on `Start Debugging`.
 
 ### Linux
 To start MT-ComparEval two processes have to be run:
@@ -147,62 +209,6 @@ For deleting experiments via API use `api/experiments/delete/<id>`.
 * Find out task id, e.g. `sqlite3 storage/database "SELECT id, name FROM tasks WHERE experiments_id=XYZ"`;
 * Delete task: `sqlite3 storage/database "sqlite3 storage/database "DELETE FROM tasks WHERE id=ABC";"`
 * Restart watcher
-
-## Run with docker-compose
-
-In case of first run: seed the database on your host machine:
-```
-sqlite3 storage/database < schema.sql
-```
-
-Build and run as daemon with:
-```
-docker-compose up -d
-```
-
-Docker compose maps the host volumes storage/ log/ and data/ to their corresponding container volumes
-
-Go to http://localhost:8080
-
-## (alternative) Run with docker
-
-Build the image:
-
-```
-docker build --tag mtcompareval .
-```
-
-Run the image with persistent storage:
-
-```
-docker run -d --rm  -v $SOMEPATH/data:/data -v $SOMEPATH/storage:/storage -v $SOMEPATH/log:/log -p 8080:8080 mtcompareval
-```
-Make sure you have a sqlite3 "database" located under $SOMEPATH/storage. If not you can create one with:
-
-```
-sqlite3 $SOMEPATH/storage/database < schema.sql
-```
-
-And that you have the these folders:
-
-```
-mkdir -p $SOMEPATH/hjerson
-mkdir -p $SOMEPATH/precomputed_ngrams
-mkdir -p $SOMEPATH/ter
-```
-
-Overriding the config file:
-
-```
-docker run -d --rm  \
--v $SOMEPATH/data:/data \
--v $SOMEPATH/storage:/storage \
--v $SOMEPATH/log:/log \
--v $SOMEPATH/config.neon:/app/config/config.neon \
--p 8080:8080 mtcompareval
-```
-
-Go to http://localhost:8080
 
 # The updated version of MT-ComparEval
 
