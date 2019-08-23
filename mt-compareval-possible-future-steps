@@ -1,0 +1,33 @@
+
+
+MT-Compareval possible future steps
+===================================
+
+1. EXPORT
+---------
+
+Some export possibilities have already been implemented.
+Further possibilities:
+- export post editing information along with the sentences (the discussion about storing post-editing information in the xliff format, and the format specifications for that, is currently ongoing)
+- ...
+
+2. POSSIBILITY TO IMPORT MULITPLE TEST SETS (!), TASKS, ENGINES, LANGUAGE PAIRS
+---------------------------------------------------------------------------
+
+This could be done by importing a csv.
+
+3. MULTIPLE TEST SET COMPARISON
+-------------------------------
+
+This is already implemented; possible improvements:
+- measure how well an engine does for a domain
+- add a metric for how significat a certain score is
+- currently, the comparisons are based upon BLEU scores. Make this configurable so that other metrics can be used for comparison as well.
+- make comparison of a subset of test sets possible (currently: all test sets / per domain)
+
+
+5. POSSIBILITY TO UPLOAD METRIC SCORES
+--------------------------------------
+
+Possibility to import tasks with already computed metric scores (instead of computing the scores by MT-ComparEval).
+
