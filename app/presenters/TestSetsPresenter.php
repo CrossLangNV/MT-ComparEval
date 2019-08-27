@@ -156,29 +156,12 @@ class TestSetsPresenter extends BasePresenter {
 
 		$tableData = array();
 
-		foreach ($languagePairs as $languagePairIndex => $languagePair) {
-			$languagePairData = array();
-			foreach ($testSets as $testSetIndex => $testSet) {
-				$tasks = $this->tasksModel->getTasks($testSet['id']);
-				foreach ($engines as $engineIndex => $engine) {
-					if ($engine['language_pairs_id'] == $languagePair['id']) {
-						foreach ($tasks as $taskIndex => $task) {
-							if ($engine['id'] == $task['engines_id']) {
-								$languagePairData[$testSet['id']][$engine['id']]['id'] = $task['id'];
-								$languagePairData[$testSet['id']][$engine['id']]['description'] = $task['description'];
-							}
-						}
-						if ($languagePairData[$testSet['id']][$engineIndex] == null) {
-							$languagePairData[$testSet['id']][$engine['id']] = 0;
-						}
-					}
-				}
-			}
-			$tableData[$languagePair['id']] = $languagePairData;
+		$result = $this->tasksModel->getAllTasks();
+		foreach ($result as $row) {
+			$tableData[$row->languagepair_id][$row->testset_id][$row->engine_id] = array("id" => $row->task_id, "description" => $row->task_name);
 		}
-
-		$this->template->engines = $this->enginesModel->getEngines();
-		$this->template->testSets = $this->testSetsModel->getTestSets();
+		$this->template->engines = $engines;
+		$this->template->testSets = $testSets;
 		$this->template->tableData = $tableData;
 	}
 

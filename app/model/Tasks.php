@@ -15,6 +15,14 @@ class Tasks {
 		return $this->db->table( 'tasks' )->wherePrimary( $taskId )->fetch();
 	}
 
+	public function getAllTasks( ) {
+		return $this->db->query('SELECT t.id task_id, t.description task_name, e.id engine_id, e.name engine_name, ts.id testset_id, ts.name as testset_name, lp.id  languagepair_id 
+		FROM tasks t
+	 INNER JOIN engines e on t.engines_id = e.id
+	 INNER JOIN test_sets ts on t.test_sets_id = ts.id
+	 INNER JOIN language_pairs lp on ts.language_pairs_id = lp.id;');
+	}
+
 	public function getTaskMetrics( $taskId ) {
 		$metrics = array();
 		foreach( $this->getTask( $taskId )->related( 'tasks_metrics' ) as $metric ) {
