@@ -156,10 +156,25 @@ class TestSetsPresenter extends BasePresenter {
 
 		$tableData = array();
 
+		// Initialize with empty values
+		foreach ($languagePairs as $languagePairIndex => $languagePair) {
+			$languagePairData = array();
+			foreach ($testSets as $testSetIndex => $testSet) {
+				foreach ($engines as $engineIndex => $engine) {
+					if ($engine['language_pairs_id'] == $languagePair['id']) {
+						$languagePairData[$testSet['id']][$engine['id']] = 0;
+					}
+				}
+				$tableData[$languagePair['id']] = $languagePairData;
+			}
+		}
+
+		// Fill in data table
 		$result = $this->tasksModel->getAllTasks();
 		foreach ($result as $row) {
 			$tableData[$row->languagepair_id][$row->testset_id][$row->engine_id] = array("id" => $row->task_id, "description" => $row->task_name);
 		}
+
 		$this->template->engines = $engines;
 		$this->template->testSets = $testSets;
 		$this->template->tableData = $tableData;
