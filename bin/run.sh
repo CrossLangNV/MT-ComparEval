@@ -10,8 +10,14 @@
 # create database if it doesn't exist
 [ ! -s "/app/storage/database" ] && sqlite3 /app/storage/database < /app/schema.sql
 
-# create data folder if it doesn't exist
+# create folders if it doesn't exist
 mkdir -p /app/data
+mkdir -p /app/log
+mkdir -p /app/storage
+mkdir -p /app/storage/hjerson
+mkdir -p /app/storage/precomputed_ngrams
+mkdir -p /app/storage/ter
+mkdir -p /app/temp/cache
 
 # watch
 php -f /app/www/index.php Background:Watcher:Watch --folder=/app/data &
