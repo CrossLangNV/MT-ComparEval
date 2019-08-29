@@ -1,24 +1,17 @@
+# Future work
 
-
-MT-Compareval possible future steps
-===================================
-
-1. EXPORT
----------
+## Export
 
 Some export possibilities have already been implemented.
 Further possibilities:
 - export post editing information along with the sentences (the discussion about storing post-editing information in the xliff format, and the format specifications for that, is currently ongoing)
 - export tables and figures to csv, LaTeX, pdf...
-- ...
 
-2. POSSIBILITY TO IMPORT MULITPLE TEST SETS (!), TASKS, ENGINES, LANGUAGE PAIRS
----------------------------------------------------------------------------
+## Possibility to import mulitple test sets (!), tasks, engines, language pairs
 
 This could be done by importing a csv.
 
-3. MULTIPLE TEST SET COMPARISON
--------------------------------
+## Multiple test set comparison
 
 This is already implemented; possible improvements:
 - measure how well an engine does for a domain
@@ -26,33 +19,15 @@ This is already implemented; possible improvements:
 - currently, the comparisons are based upon BLEU scores. Make this configurable so that other metrics can be used for comparison as well.
 - make comparison of a subset of test sets possible (currently: all test sets / per domain)
 
-
-4. POSSIBILITY TO UPLOAD METRIC SCORES
---------------------------------------
-
-Possibility to import tasks with already computed metric scores (instead of computing the scores by MT-ComparEval).
-
-5. IMPROVEMENT OF GLOBAL ENGINE HIERARCHY
------------------------------------------
+## Improvement of global engine hierarchy
 
 UX can be improved.
 
-6. ADDITIONAL METRICS
----------------------
-
-Provide wrappers for popular existing metrics like sacreBLEU and multeval.
-
-7. PROVIDE SOME SAMPLE DATA FOR TESTING
----------------------------------------
+## Sample data
 
 E.g.: with sacreBLEU you can download WMT test sets. Provide a similar possibility in the application.
 
-8. SQLITE ALTERNATIVE
----------------------
-
-Research alternatives to improve performance.
-
-9. MULTI-USER ENVIRONMENT
--------------------------
+## Multi-user environment
 
 Implement a signup/login system. Each user has their own data.
+
