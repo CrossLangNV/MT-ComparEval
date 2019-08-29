@@ -84,13 +84,19 @@
       },
       physics: {
         barnesHut: {
-          avoidOverlap: 1,
-          stabilization: true
+          avoidOverlap: 0.5,
+          stabilization: {
+            enabled: true
+          }
         }
       }
     };
     network = new vis.Network(container, data, options);
-    network.setSize("500", "500");
+    network.setSize("1000", "1000");
+
+    network.on("stabilizationIterationsDone", function () {
+      network.setOptions( { physics: false } );
+    });
 
     $(".vis-network").css('margin-left', "auto");
     $(".vis-network").css('margin-right', "auto");
