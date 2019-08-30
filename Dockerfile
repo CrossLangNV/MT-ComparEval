@@ -22,6 +22,11 @@ RUN pecl install -f xdebug \
 # for Linux: use the ip address of the docker bridge (docker0)
 ENV XDEBUG_CONFIG="remote_host=host.docker.internal remote_port=9001 remote_enable=1"
 
+RUN apt update
+RUN apt -y install python3-pip
+# install sacrebleu
+RUN pip3 install sacrebleu
+
 COPY . /app
 
 RUN chmod +x bin/run.sh
