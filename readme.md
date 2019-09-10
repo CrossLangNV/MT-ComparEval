@@ -11,7 +11,6 @@ MT-ComparEval is distributed under Apache 2.0 license with an exception of [High
   which is distributed under [Creative Commons Attribution-NonCommercial 3.0 License](http://creativecommons.org/licenses/by-nc/3.0/).
 
 # Try it online before installing on your server
-
 - http://wmt.ufal.cz: all systems from the [WMT](http://www.statmt.org/wmt18/) 2014–2018
 - http://mt-compareval.ufal.cz: upload and analyze your translations
 
@@ -28,7 +27,7 @@ For a user-focused show-case study explaining most of the features, see:
 
 The default configuration shipped with the software includes only the basic BLEU-related metrics. If you are interested only for these metrics, proceed to the next chapter "Basic Installation".
 
-There is the possibility to enable additional metrics. At the moment, the tool "Hjerson" is supported but it is optional. Its entries are commented out in the file `config.neon` , in folder `app\config`, after downloading the software. If you are interested in enabling Hjerson, you should edit this file and uncomment (remove the leading `#` from) the lines that contain the name of the metric. Then proceed to the installation as following.
+There is the possibility to enable additional metrics. At the moment, the tool "Hjerson" is supported, but it is optional. Its entries are commented out in the file `config.neon` , in folder `app\config`, after downloading the software. If you are interested in enabling Hjerson, you should edit this file and uncomment (remove the leading `#` from) the lines that contain the name of the metric. Then proceed to the installation as following.
 
 ## Basic Installation
 
@@ -135,7 +134,7 @@ To start MT-ComparEval two processes have to be run:
 
  - `bin/server.sh` which starts the application server on the address [localhost:8080](http://localhost:8080)
   (you can can check/adapt `app/config/config.neon` first to set the main title, set of metrics etc. See the [default config](app/config/config.neon).)
- - `bin/watcher.sh` which monitors folder `data` for new experiments and tasks (the `data` folder must exist before you run `bin/watcher.sh`.)
+ - `bin/watcher.sh` which monitors folder `data` for new test sets and tasks (the `data` folder must exist before you run `bin/watcher.sh`.)
 
 ### Windows
  - Open Windows Explorer and navigate to C:\tools\MT-ComparEval\bin\win.
@@ -146,71 +145,86 @@ To start MT-ComparEval two processes have to be run:
 
 
 ## Structure of the `data` folder
-Folder `data` contains folders with *experiments* (e.g. `EN-CS-WMT15`), which contains subfolders with *tasks* for each experiment (e.g. `MOSES`). For example:
+
+Note: the original structure of the data folder has been changed in this version. The new structure is described here.
+
+Folder `data` contains folders with *test sets* (e.g. `Eco-Fin-3`), which contains subfolders with *tasks* for each test set (e.g. `30-21`). For example:
 ```
 data/
-├─ EN-CS-WMT15/
+├─ Eco-Fin-3/
 │  ├─ source.txt
 │  ├─ reference.txt
-│  ├─ CHIMERA/
+│  ├─ 30-21/
 │  │  └─ translation.txt
-│  └─ NEURAL-MT/
+│  └─ 30-24/
 │     └─ translation.txt
-└─ EN-DE-WMT15/
+└─ Sub-Alt-5/
    ├─ source.txt
    ├─ reference.txt
-   ├─ MOSES/
+   ├─ 45-12/
    │  └─ translation.txt
-   └─ NEURAL-MT/
+   └─ 45-18/
       └─ translation.txt
 ```
 
-Each folder corresponds to one experiment and it should contain the following files:
+Each folder corresponds to one test set and it should contain the following files:
  - `source.txt` - a plain text file with sentences in source language (one sentence per line).
  - `reference.txt` - a plain text file with reference translations (in target language).
  - `config.neon` - (optionally) a configuration file with the following structure:
 ```
-name: Name of the experiment
-description: "Description of the experiment\n can be multiline"
+The name of the folder is the of the test set, followed by a dash and the ID of the corresponding language pair.
+
+Inside config.neon:
+name: Name of the test set
+description: "Description of the test set\n can be multiline"
 source: source.txt
 reference: reference.txt
 ```
 See http://ne-on.org/ for the syntax of neon files.
-The `source` and `reference` needs to be defined only if you you choose non-default file names (not `source.txt` and `reference.txt`).
+The `source` and the `reference` need to be defined only if you you choose non-default file names (not `source.txt` and `reference.txt`).
 
 Individual machine translations called *tasks* are then stored in subfolders with the following files:
 - `translation.txt` - a plain text file with translated sentences
 - `config.neon` - (optionally) a configuration file with the following structure:
 ```
+
+The name of the subfolder is the ID of the corresponding test set, followed by a dash and the ID of the corresponding engine.
+
+Inside config.neon:
 name: Name of the task
 description: Description of the task
 translation: translation.txt
 precompute_ngrams: true
 ```
 
-## API to create experiments and tasks
-A curl command to create an experiment:
+## API to create test sets, engines and tasks
+A curl command to create a test set:
 ```bash
-curl -X POST -F "name=experiment name" -F "description=description" -F "source=@source.txt" -F "reference=@reference.txt" http://localhost:8080/api/experiments/upload
+curl -X POST http://localhost:8080/api/testsets/upload -F "source=@source.txt" -F "test set name" -F "language-pairs-id=language pair ID" -F "description=test set description" -F "domain=test set domain" -F "reference=@reference.txt"
+```
+
+A curl command to create an engine:
+```bash
+curl -s -X POST http://localhost:8080/api/engine/new -F "name=engine name" -F "language-pairs-id=language pair id" -F "parent-id=parent engine ID"
 ```
 
 A curl command to create a task:
 ```bash
-curl -X POST -F "name=task name" -F "description=description" -F "experiment_id=1" -F "translation=@translation.txt" http://localhost:8080/api/tasks/upload
+curl -X POST http://localhost:8080/api/tasks/upload -F "description=task description" -F "test_set_id=test set id" -F "engine_id=engine id" -F "translation=@translation.txt"
 ```
 
-For deleting experiments via API use `api/experiments/delete/<id>`.
+For deleting test sets via API use `api/testsets/delete/<id>`.
 
 ## How to remove a task manually
 
-* Retrieve the experiment id from frontend. When you open an experiment you can see the id in the URL.
+* Retrieve the test set id from frontend. When you open a test set you can see the id in the URL.
 * Stop watcher
 * Remove task from folder `data/.../` (or if you want to reimport the task after watcher is restarted, delete the hidden files `.imported` and `.notimported`)
-* Find out task id, e.g. `sqlite3 storage/database "SELECT id, name FROM tasks WHERE experiments_id=XYZ"`;
+* Find out task id, e.g. `sqlite3 storage/database "SELECT id, name FROM tasks WHERE test_sets_id=XYZ"`;
 * Delete task: `sqlite3 storage/database "sqlite3 storage/database "DELETE FROM tasks WHERE id=ABC";"`
 * Restart watcher
 
-# The updated version of MT-ComparEval
+# More about this updated version of MT-ComparEval
 
 In order to accomodate the needs of researchers, MT-ComparEval has been adapted for a broader range of use cases.
 
@@ -259,4 +273,20 @@ The following parameters can be provided by the user:
 - the file format in which to download the sentences: CSV or XLIFF.
 
 This view can be accessed by navigating to <application-address>/tasks/<first-task-id>-<second-task-id>/compare, and selecting the Download tab.
+
+### Upload scripts
+
+In order to facilitate uploading multiple test sets and tasks into MT-ComparEval at once, several bash scripts have been written:
+
+1) upload-test-sets.sh
+
+This script allows to upload multiple test sets at once. It requires two parameters. The first one is the URL of MT-ComparEval. The second one is the path to the CSV file containing the data to import. The expected CSV format is: "language-pairs-id,name,description,domain,source,reference". Each line of the CSV file corresponds to a test set to import.
+
+2) upload-tasks.sh
+
+This script allows to upload multiple tasks at once. It requires two parameters. The first one is the URL of MT-ComparEval. The second one is the path to the CSV file containing the data to import. The expected CSV format is: "test_set_id,engine_id,description,translation". Each line of the CSV file corresponds to a task to import.
+
+3) upload-all.sh
+
+This script allows to upload multiple language pairs, engines, test sets and tasks at once. It requires two parameters. The first one is the URL of MT-ComparEval. The second one is the path to the CSV file containing the data to import. The expected CSV format is: "source_language,target_language,test_set_name,test_set_description,test_set_domain,test_set_source,test_set_reference,engine_name,engine_parent_id,task_description,task_translation". Each line of the CSV file corresponds to a task to import. The script will try to create the language pair, the test set, the engine corresponding to the described task. If those entities exist already, the script will use the existing ones.
 
