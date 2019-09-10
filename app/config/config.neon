@@ -37,6 +37,9 @@ common:
 		hjersonCache:
 			class: Nette\Caching\Cache( Nette\Caching\Storages\FileStorage( %appDir%/../storage/hjerson ) )
 			autowired: no
+		sacrebleuCache:
+			class: Nette\Caching\Cache( Nette\Caching\Storages\FileStorage( %appDir%/../storage/sacrebleu ) )
+			autowired: no
 		cacheStorage:
 				class: Nette\Caching\Storages\DevNullStorage
 		# Models
@@ -51,6 +54,7 @@ common:
 		# Metrics
 		brevityPenaltyMetric: BrevityPenalty
 		bleuMetric: Bleu( @geometricPrecisionMetric, @brevityPenaltyMetric )
+		sacrebleuMetric: SacreBleu( @sacrebleuCache )
 		hjersonWOMetric: Hjerson("bhypRer", @hjersonCache)
 		hjersonFormMetric: Hjerson("bhypINFer", @hjersonCache)
 		hjersonOmissionMetric: Hjerson("bMISer", @hjersonCache)
@@ -106,11 +110,16 @@ common:
 				- setNormalizer( @normalizer )
 
 		enabledMetrics:	EnabledMetricsList( [
-			#BREVITY-PENALTY: [
-			#	class: @brevityPenaltyMetric,
-			#	case_sensitive: False,
-			#	compute_bootstrap: False,
-			#],
+			# BREVITY-PENALTY: [
+			# 	class: @brevityPenaltyMetric,
+			# 	case_sensitive: False,
+			# 	compute_bootstrap: False,
+			# ],
+			# SACREBLEU: [
+			# 	class: @sacrebleuMetric,
+			# 	case_sensitive: True,
+			# 	compute_bootstrap: False,
+			# ],
 			BLEU: [
 				class: @bleuMetric,
 				case_sensitive: False,
@@ -175,6 +184,7 @@ common:
 
 		# Replace MTEvalInternationalNormalizer with MTEvalNormalizer
 		# if you want to get results compatible with matrix.statmt.org
+		# use NoNormalizer for SacreBLEU
 		normalizer: MTEvalInternationalNormalizer
 
 		# Sentences preprocessors

@@ -94,6 +94,7 @@ INSERT INTO `metrics` (`id`, `name`) VALUES (16, 'H-OMISSION');
 INSERT INTO `metrics` (`id`, `name`) VALUES (17, 'H-FORM-cased');
 INSERT INTO `metrics` (`id`, `name`) VALUES (18, 'H-FORM');
 INSERT INTO `metrics` (`id`, `name`) VALUES (19, 'TER');
+INSERT INTO "metrics" ("id", "name") VALUES (20, 'SACREBLEU');
 
 
 CREATE TABLE "translations_metrics" (
