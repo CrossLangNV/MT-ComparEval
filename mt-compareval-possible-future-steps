@@ -12,11 +12,6 @@ Further possibilities:
 - export tables and figures to csv, LaTeX, pdf...
 - ...
 
-2. POSSIBILITY TO IMPORT MULITPLE TEST SETS (!), TASKS, ENGINES, LANGUAGE PAIRS
----------------------------------------------------------------------------
-
-This could be done by importing a csv.
-
 3. MULTIPLE TEST SET COMPARISON
 -------------------------------
 
@@ -56,3 +51,27 @@ Research alternatives to improve performance.
 -------------------------
 
 Implement a signup/login system. Each user has their own data.
+
+10. MAKE THE SOURCE, REFERENCE AND TRANSLATION FILES DOWNLOADABLE FROM THE INTERFACE
+------------------------------------------------------------------------------------
+
+11. A PER-SENTENCE COMPARISON VIEW
+----------------------------------
+
+Add a view which would allow to compare translations of one sentence by different engines (more than two engines, which is currently possible in the Task view).
+
+12. ADD BLIND EVALUATION VIEW
+-----------------------------
+
+An evaluator evaluates translations by different engines. He does not see which translation comes from which engine.
+
+13. GRAPH VISUALIZATION IN PYTHON
+---------------------------------
+
+Note: Joachim is currently working on this.
+
+14. NGRAMS GENERATION FROM PYTHON
+---------------------------------
+
+Note: on Anna's todo list.
+
