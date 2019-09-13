@@ -290,3 +290,6 @@ This script allows to upload multiple tasks at once. It requires two parameters.
 
 This script allows to upload multiple language pairs, engines, test sets and tasks at once. It requires two parameters. The first one is the URL of MT-ComparEval. The second one is the path to the CSV file containing the data to import. The expected CSV format is: "source_language,target_language,test_set_name,test_set_description,test_set_domain,test_set_source,test_set_reference,engine_name,engine_parent_id,task_description,task_translation". Each line of the CSV file corresponds to a task to import. The script will try to create the language pair, the test set, the engine corresponding to the described task. If those entities exist already, the script will use the existing ones.
 
+Note: jq is required to use these scripts. Please follow installation instructions at
+https://stedolan.github.io/jq/download/
+

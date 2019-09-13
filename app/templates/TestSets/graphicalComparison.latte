@@ -103,7 +103,9 @@
       var selectedEngineScores = {$chartSeries}[selectedEngineIndex]['data'];
       Object.keys(metrics).forEach(function processKeys(testSetId, index) {
         Object.keys(metrics[testSetId]).forEach(function processKeys(engineId) {
-          document.getElementById("delta-" + testSetId + "-" + engineId).innerHTML = metrics[testSetId][engineId]['metrics']['BLEU'] - selectedEngineScores[index];
+          var score = metrics[testSetId][engineId]['metrics']['BLEU'] - selectedEngineScores[index];
+          var roundedScore = Math.round(score * 100) / 100;
+          document.getElementById("delta-" + testSetId + "-" + engineId).innerHTML = roundedScore;
         });
       });
     }
@@ -256,7 +258,9 @@
       var selectedEngineScores = {$chartSeries}[selectedEngineIndex]['data'];
       Object.keys(metrics).forEach(function processKeys(testSetId, index) {
         Object.keys(metrics[testSetId]).forEach(function processKeys(engineId) {
-          document.getElementById("delta-ordered-" + testSetId + "-" + engineId).innerHTML = metrics[testSetId][engineId]['metrics']['BLEU'] - selectedEngineScores[index];
+          var score = metrics[testSetId][engineId]['metrics']['BLEU'] - selectedEngineScores[index];
+          var roundedScore = Math.round(score * 100) / 100;
+          document.getElementById("delta-ordered-" + testSetId + "-" + engineId).innerHTML = roundedScore;
         });
       });
     }
