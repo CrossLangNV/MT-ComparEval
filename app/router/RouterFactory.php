@@ -37,9 +37,12 @@ class RouterFactory
 			$router[] = new Route('api/tasks', 'Api:Tasks:default');
 			$router[] = new Route('api/tasks/upload', 'Api:Tasks:upload');
 			$router[] = new Route('api/tasks/download-best-or-worst-sentences', 'Api:Tasks:downloadBestOrWorstSentences');
+			$router[] = new Route('api/tasks/download-translation/<id>', 'Api:Tasks:downloadTranslation');
 			$router[] = new Route('api/testsets/upload', 'Api:TestSets:upload');
 			$router[] = new Route('api/testsets/status/<id>', 'Api:TestSets:status');
 			$router[] = new Route('api/testsets/delete/<id>', 'Api:TestSets:delete');
+			$router[] = new Route('api/testsets/downloadSource/<id>', 'Api:TestSets:downloadSource');
+			$router[] = new Route('api/testsets/downloadReference/<id>', 'Api:TestSets:downloadReference');
 			$router[] = new Route('api/language-pair/new', 'Api:TestSets:createLanguagePair');
 			$router[] = new Route('api/language-pair/delete/<id>', 'Api:TestSets:deleteLanguagePair');
 			$router[] = new Route('api/engine/new', 'Api:TestSets:addEngine');

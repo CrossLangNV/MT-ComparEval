@@ -158,4 +158,32 @@ class TestSetsPresenter extends BasePresenter {
 		$this->sendResponse( new \Nette\Application\Responses\JsonResponse( $response ) );
 	}
 
+	public function renderDownloadSource( $id ) {
+		$testSet = $this->testSetsModel->getTestSetById($id);
+		$filePath = '../data/' . $testSet['url_key'] . '/source.txt';
+		if (!file_exists($filePath)) {
+			$this->terminate();
+		}
+
+		header("Content-disposition: attachment; filename=source.txt");
+		header("Content-type: text/plain");
+		readfile($filePath);
+
+		$this->terminate();
+	}
+
+	public function renderDownloadReference( $id ) {
+		$testSet = $this->testSetsModel->getTestSetById($id);
+		$filePath = '../data/' . $testSet['url_key'] . '/reference.txt';
+		if (!file_exists($filePath)) {
+			$this->terminate();
+		}
+
+		header("Content-disposition: attachment; filename=reference.txt");
+		header("Content-type: text/plain");
+		readfile($filePath);
+
+		$this->terminate();
+	}
+
 }

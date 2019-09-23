@@ -1232,6 +1232,18 @@ function Sentences( $scope, $http ) {
 					<input type="hidden" name="second-task-id" value="{$taskIds[1]}"" />
 				</p>
 			</form>
+			<div style="margin-top: 70px;">
+				<a href="{plink Api:TestSets:downloadSource $testSetId}" class="btn btn-default">Download source</a>
+			</div>
+			<div style="margin-top: 15px;">
+				<a href="{plink Api:TestSets:downloadReference $testSetId}" class="btn btn-default">Download reference</a>
+			</div>
+			<div style="margin-top: 15px;">
+				<a href="{plink Api:Tasks:downloadTranslation $taskIds[0]}" class="btn btn-default">Download translation by {{ taskEngineNames[ task0 ] }}</a>
+			</div>
+			<div style="margin-top: 15px;">
+				<a href="{plink Api:Tasks:downloadTranslation $taskIds[1]}" class="btn btn-default">Download translation by {{ taskEngineNames[ task1 ] }}</a>
+			</div>
 		</div>
 
 		<div

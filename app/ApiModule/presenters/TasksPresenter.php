@@ -38,6 +38,7 @@ class TasksPresenter extends BasePresenter {
 				$taskResponse[ 'edit_link' ] = $this->link( ':Tasks:edit', $task->id );
 				$taskResponse[ 'delete_link' ] = $this->link( ':Tasks:delete', $task->id );
 			}
+			$taskResponse[ 'download_translation_link' ] = $this->link( ':Api:Tasks:downloadTranslation', $task->id );
 
 			$response[ 'tasks' ][ $task->id ] = $taskResponse;
 		}
@@ -199,6 +200,22 @@ class TasksPresenter extends BasePresenter {
 		fputs($output, '</xliff>');
 
 		fclose( $output ) or die( "Can't close php://output" );
+		$this->terminate();
+	}
+
+	public function renderDownloadTranslation( $id ) {
+		$task = $this->tasksModel->getTaskById($id);
+		$testSet = $this->testSetsModel->getTestSetById($task['test_sets_id']);
+
+		$filePath = '../data/' . $testSet['url_key'] . '/' . $task['url_key'] . '/translation.txt';
+		if (!file_exists($filePath)) {
+			$this->terminate();
+		}
+
+		header("Content-disposition: attachment; filename=translation.txt");
+		header("Content-type: text/plain");
+		readfile($filePath);
+
 		$this->terminate();
 	}
 

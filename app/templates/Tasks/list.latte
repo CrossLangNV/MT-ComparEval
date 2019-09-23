@@ -237,6 +237,7 @@ $(document).ready( function() {
 							<a ng-click="hideTask( task )">hide</a>
 							<a href="{{ task[ 'edit_link' ] }}" ng-show="showAdministration">edit</a>
 							<a href="{{ task[ 'delete_link' ] }}" ng-show="showAdministration" onclick="return confirm('do you really want to delete this? there is no way to undo this action')">delete</a>
+							<a href="{{ task[ 'download_translation_link' ] }}">download&nbsp;translation</a>
 						</div>
 					</td>
 				</tr>
@@ -247,6 +248,8 @@ $(document).ready( function() {
 				<a href="{plink Tasks:new $testSetId}" class="btn btn-default">New Task</a>
 			{/if}
 			<a href="{plink Tasks:downloadPValues $testSetId, "BLEU"}" class="btn btn-default">Download BLEU p-values</a>
+			<a href="{plink Api:TestSets:downloadSource $testSetId}" class="btn btn-default">Download source</a>
+			<a href="{plink Api:TestSets:downloadReference $testSetId}" class="btn btn-default">Download reference</a>
 
 			<div class="alert" ng-show="tasks.length <= 1">
 				You need to import at least 2 tasks to be able to compare them.
