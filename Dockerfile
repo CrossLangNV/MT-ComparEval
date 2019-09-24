@@ -20,6 +20,7 @@ RUN pecl install -f xdebug \
 # enable XDebug remote debugging
 # host.docker.internal is a reserved host entry for Docker for Windows and Mac to allow a container to communicate with the host
 # for Linux: use the ip address of the docker bridge (docker0)
+# ENV XDEBUG_CONFIG="remote_host=host.docker.internal remote_port=9001 remote_enable=1 profiler_enable=1 profiler_output_dir=/app/profiler"
 ENV XDEBUG_CONFIG="remote_host=host.docker.internal remote_port=9001 remote_enable=1"
 
 COPY . /app

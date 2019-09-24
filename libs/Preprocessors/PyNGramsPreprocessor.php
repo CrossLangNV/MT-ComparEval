@@ -1,13 +1,13 @@
 <?php
 
 /**
- * NGramsPreprocessor adds all reference/translation n-grams to meta informations
+ * PyNGramsPreprocessor adds all reference/translation n-grams to meta informations
  */
-class NGramsPreprocessor implements Preprocessor {
+class PyNGramsPreprocessor implements Preprocessor {
 
 	private $ngramizer;
 
-	public function __construct( PyNGramizer $ngramizer ) {
+	public function __construct( NGramizer $ngramizer ) {
 		$this->ngramizer = $ngramizer;
 	}
 

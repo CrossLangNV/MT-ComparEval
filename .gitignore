@@ -2,8 +2,16 @@ log/*
 temp/*
 vendor/*
 data/*
+data-mariadb/*
 storage/*
+storage-mariadb/*
+my-data/
+my-storage/
+profiler/
+data.*
+storage.*
 *.swp
+dump.sql
 
 .DS_Store
 !.gitignore

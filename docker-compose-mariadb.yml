@@ -1,0 +1,22 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb
+    volumes:
+      - 'mariadb:/var/lib/mysql'
+      - ./mariadb-init/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: main
+    restart: always
+
+  mtcompareval:
+    build: .
+    image: mtcompareval
+    ports:
+      - '8080:8080'
+    volumes:
+        - './:/app'
+
+volumes:
+  mariadb:

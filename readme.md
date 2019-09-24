@@ -224,7 +224,7 @@ The term experiment is no longer used in the new version of this tool. Instead, 
 - engine;
 - task.
 
-The meening of these terms and their usage can be clarified by exploring this example:
+The meaning of these terms and their usage can be clarified by exploring this example:
 http://mtcompareval-ng.crosslang.com:8051/matrix
 
 As one can see in the example, multiple language pairs can be added. Per language pair, one can add multiple test sets. Also, per language pair, one can add multiple engines. Test sets and engines of each language pair are presented in a table. Each cell of this table corresponds with a task. A task is the translation of the given test set by the given engine.
