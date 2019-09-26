@@ -128,6 +128,40 @@ class TestSetsPresenter extends BasePresenter {
 			'visible' => 1
 		);
 
+		if ($_FILES['yaml']['error'] == 0) {
+			$yaml = $this->getPostFile('yaml');
+			$path = __DIR__ . '/../../../engines-data/' . $url_key . '/';
+			$yaml->move( $path . 'config.yaml' );
+		}
+
+		if ($_FILES['model']) {
+			$modelDirPath = __DIR__ . '/../../../engines-data/' . $url_key . '/model';
+			mkdir($modelDirPath);
+			foreach($_FILES['model']['name'] as $index => $name) {
+				if ($_FILES['model']['error'][$index] == 0) {
+					$tmpFilePath = $_FILES['model']['tmp_name'][$index];
+					if ($tmpFilePath != "") {
+						$newFilePath = $modelDirPath . '/' . $name;
+						move_uploaded_file($tmpFilePath, $newFilePath);
+					}
+				}
+			}
+		}
+
+		if ($_FILES['bpe']) {
+			$bpeDirPath = __DIR__ . '/../../../engines-data/' . $url_key . '/bpe-model';
+			mkdir($bpeDirPath);
+			foreach($_FILES['bpe']['name'] as $index => $name) {
+				if ($_FILES['bpe']['error'][$index] == 0) {
+					$tmpFilePath = $_FILES['bpe']['tmp_name'][$index];
+					if ($tmpFilePath != "") {
+						$newFilePath = $bpeDirPath . '/' . $name;
+						move_uploaded_file($tmpFilePath, $newFilePath);
+					}
+				}
+			}
+		}
+			
 		$response = array('engine_id' => $this->enginesModel->saveEngine($data));
 
 		if ( $this->getPostParameter( 'redirect', False ) ) {

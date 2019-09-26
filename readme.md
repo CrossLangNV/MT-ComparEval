@@ -293,3 +293,14 @@ This script allows to upload multiple language pairs, engines, test sets and tas
 Note: jq is required to use these scripts. Please follow installation instructions at
 https://stedolan.github.io/jq/download/
 
+### Extra engine information
+
+On engine creation, it is now possible to add files that describe engine training:
+- the YAML configuration file;
+- the files describing the model;
+- the files describing the BPE model.
+
+### Possibility to download files from the interface
+
+It is now possible to download the source, reference and translation files from the interface. This option is available from the test set tasks overview view and in the comparison view on the "Download" tab.
+

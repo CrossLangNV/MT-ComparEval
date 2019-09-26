@@ -250,6 +250,7 @@ $(document).ready( function() {
 			<a href="{plink Tasks:downloadPValues $testSetId, "BLEU"}" class="btn btn-default">Download BLEU p-values</a>
 			<a href="{plink Api:TestSets:downloadSource $testSetId}" class="btn btn-default">Download source</a>
 			<a href="{plink Api:TestSets:downloadReference $testSetId}" class="btn btn-default">Download reference</a>
+			<a href="{plink TestSets:perSentenceComparison $testSetId}" class="btn btn-default">View per-sentence comparison</a>
 
 			<div class="alert" ng-show="tasks.length <= 1">
 				You need to import at least 2 tasks to be able to compare them.
@@ -260,5 +261,3 @@ $(document).ready( function() {
 	<div class="alert" ng-show="tasks.length == 0">
 		There are no tasks for this test set.
 	</div>
-</div>
-

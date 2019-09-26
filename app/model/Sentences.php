@@ -174,6 +174,18 @@ class Sentences {
 			->fetchPairs( 'sentences_id', 'score' );
 	}
 
+	public function getSentencesByTestSet( $testSetId ) {
+		return $this->db->table( 'sentences' )
+			->where( 'test_sets_id', $testSetId )
+			->fetchAll();
+	}
+
+	public function getTranslationsBySentenceId($sentenceId) {
+		return $this->db->table( 'translations' )
+			->where( 'sentences_id', $sentenceId )
+			->fetchAll();
+	}
+
 	private function joinResults( $resultsA, $resultsB ) {
 		$result = array();
 		foreach( $resultsA as $sentenceId => $score ) {

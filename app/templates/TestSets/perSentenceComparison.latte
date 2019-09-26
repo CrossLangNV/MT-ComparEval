@@ -1,0 +1,55 @@
+{block scripts}
+{include #parent}
+<script type="text/javascript" src="{$basePath}/js/bootstrap.min.js"></script>
+{/block}
+
+{block #content}
+
+<h1>{$testSet["name"]}</h1>
+
+<p>{$testSet["description"]}</p>
+
+<div ng-app="MT-ComparEval" ng-controller="Tasks">
+
+	<div>
+		<h2 style="margin-top: 30px; margin-bottom: 30px;">Per-sentence comparison</h2>
+		<div>
+			{foreach $perSentenceComparisonData as $id => $value}
+				<div>{$data}</div>
+				<table class="table table-bordered">
+					<tr>
+						<th class="span2">Source</th>
+						<td>{$value['source']}</td>
+					</tr>
+					<tr>
+						<th class="span2">Reference</th>
+						<td>{$value['reference']}</td>
+					</tr>
+					{foreach $value['translations'] as $translation}
+						<tr>
+							<th class="span2">{$translation['engine_name']}</th>
+							<td>{$translation['translation_text']}</td>
+						</tr>
+					{/foreach}
+				</table>
+				<table class="table table-bordered" style="margin-bottom: 30px; margin-top: -15px;">
+					<tr>
+						<th></th>
+							{foreach $translation['metrics'] as $metricName => $metricScore}
+							<th>{$metricName}</th>
+						{/foreach}
+					</tr>
+					{foreach $value['translations'] as $translation}
+						<tr>
+							<th class="span2">{$translation['engine_name']}</th>
+							{foreach $translation['metrics'] as $metricName => $metricScore}
+								<td>{$metricScore}</td>
+							{/foreach}
+						</tr>
+					{/foreach}
+				</table>
+			{/foreach}
+		</div>
+	</div>
+</div>
+

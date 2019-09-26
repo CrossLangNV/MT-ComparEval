@@ -45,7 +45,7 @@ class Metrics {
 	}
 
 
-	private function getScoresForTranslations( $metricId, $taskId ) {
+	public function getScoresForTranslations( $metricId, $taskId ) {
 		return $this->db
 			->table( 'translations_metrics' )
 			->select( 'score' )

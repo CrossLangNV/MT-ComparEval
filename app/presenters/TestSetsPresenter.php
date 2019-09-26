@@ -326,5 +326,33 @@ class TestSetsPresenter extends BasePresenter {
 		}
 	}
 
+	public function renderPerSentenceComparison( $testSetId ) {
+		$this->template->testSetId = $testSetId;
+		$this->template->testSet = $this->testSetsModel->getTestSetById( $testSetId );
+
+		$sentences = $this->sentencesModel->getSentencesByTestSet($testSetId);
+		$perSentenceComparisonData = array();
+		foreach($sentences as $id => $sentence) {
+			$sentenceData = array();
+			$translations = $this->sentencesModel->getTranslationsBySentenceId($id);
+			$translationsData = array();
+			foreach($translations as $translation) {
+				$translationData = array();
+				$task = $this->tasksModel->getTaskById($translation['tasks_id']);
+				$translationData['engine_name'] = $this->enginesModel->getEngineById($task['engines_id'])['name'];
+				$translationData['translation_text'] = $translation['text'];
+				$taskMetrics = $this->tasksModel->getTaskMetrics($task['id']);
+				$translationData['metrics'] = $taskMetrics;
+				array_push($translationsData, $translationData);
+			}
+			$sentenceData['translations'] = $translationsData;
+			$sentenceData['source'] = $sentence['source'];
+			$sentenceData['reference'] = $sentence['reference'];
+
+			$perSentenceComparisonData[$id] = $sentenceData;
+		}
+		$this->template->perSentenceComparisonData = $perSentenceComparisonData;
+	}
+
 }
 

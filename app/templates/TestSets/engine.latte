@@ -28,10 +28,32 @@
 	</div>
 
 	<div class="control-group">
+		<label class="control-label" for="yaml">YAML configuration file</label>
 		<div class="controls">
-			<button type="submit" class="btn">Save</button>
+			<input type="file" id="yaml" name="yaml" class="input-block-level">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="model">Model</label>
+		<div class="controls">
+			<input type="file" id="model" name="model[]" class="input-block-level" multiple="">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="bpe">BPE Model</label>
+		<div class="controls">
+			<input type="file" id="bpe" name="bpe[]" class="input-block-level" multiple="">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn" value="Upload">Save</button>
 			<input type="hidden" name="language-pairs-id" value="{$languagePair['id']}"} />
 			<input type="hidden" name="redirect" value="new" />
 		</div>
 	</div>
 </form>
+
