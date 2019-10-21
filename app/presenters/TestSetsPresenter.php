@@ -293,13 +293,30 @@ class TestSetsPresenter extends BasePresenter {
 
 	public function renderEnginesTree($engineId) {
 		$this->template->engineId = $engineId;
+		$engine = $this->enginesModel->getEngineById($engineId);
 		$engines = $this->enginesModel->getEngines()->fetchAssoc('id');
 
 		$engines[$engineId]['show'] = true;
 		$this->markChildren($engines, $engineId);
 		$this->markAncestors($engines, $engineId);
 		$this->template->engines = $engines;
+
+		$hasFiles = false;
+		$path = __DIR__ . '/../../engines-data/' . $engine['url_key'] . '/';
+		if (!$this->dirIsEmpty($path)) {
+			$hasFiles = true;
+		}
+		$this->template->hasFiles = $hasFiles;
 	}
+
+	private function dirIsEmpty($path) {
+		if (!file_exists($path)) return true;
+		if (!is_dir($path)) return true;
+		foreach (scandir($path) as $file) {
+			if (!in_array($file, array('.','..','.svn','.git'))) return false;
+		}
+		return true;
+}
 
 	public function renderEnginesTreeGlobal() {
 		$engines = $this->enginesModel->getEngines()->fetchAssoc('id');

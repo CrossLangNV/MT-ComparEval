@@ -96,7 +96,6 @@ class TasksPresenter extends BasePresenter {
 		}
 
 		// get the results
-		$sentences;
 		if ($compareTo == "first-task-and-reference") {
 			$sentences = $this->sentencesModel->getTranslationsOfOneTask( $firstTaskId, 0, $nrOfSentences, $metricName, $order );
 		}
@@ -129,33 +128,33 @@ class TasksPresenter extends BasePresenter {
 		// make the header
 		$header = array();
 		if ($compareTo == "first-task-and-reference" || $compareTo == "second-task-and-reference") {
-			array_push($header, "source,reference,translation," . $metricName);
+			array_push($header, "source\treference\ttranslation," . $metricName);
 		}
 		else {
 			$firstEngine = $this->enginesModel->getEngineById($firstTask['engines_id']);
 			$firstEngineName = $firstEngine['name'];
 			$secondEngine = $this->enginesModel->getEngineById($secondTask['engines_id']);
 			$secondEngineName = $secondEngine['name'];
-			array_push($header, "source,reference,translation-by-" . $firstEngineName . "," . $firstEngineName . "-" . $metricName . ",translation-by-" . $secondEngineName . "," . $secondEngineName . "-" . $metricName . "," . $metricName . "-diff");
+			array_push($header, "source\treference\ttranslation-by-" . $firstEngineName . "\t" . $firstEngineName . "-" . $metricName . "\ttranslation-by-" . $secondEngineName . "\t" . $secondEngineName . "-" . $metricName . "\t" . $metricName . "-diff");
 		}
 
 		// put results into the file
 		$data = array();
 		foreach( $sentences as $sentence ) {
 			$row = array();
-			$rowString = '"' . $sentence['source'] . '"';
-			$rowString .= ',"' . $sentence['reference'] . '"';
+			$rowString = $sentence['source'];
+			$rowString .= "\t" . $sentence['reference'];
 			if ($compareTo == "the-two-tasks") {
-				$rowString .= ',"' . $sentence['translations'][0]['text'] . '"';
-				$rowString .= ',' . $sentence['translations'][0]['metrics'][$metricName];
-				$rowString .= ',"' . $sentence['translations'][1]['text'] . '"';
-				$rowString .= ',' . $sentence['translations'][1]['metrics'][$metricName];
+				$rowString .= "\t" . $sentence['translations'][0]['text'];
+				$rowString .= "\t" . $sentence['translations'][0]['metrics'][$metricName];
+				$rowString .= "\t" . $sentence['translations'][1]['text'];
+				$rowString .= "\t" . $sentence['translations'][1]['metrics'][$metricName];
 				$diff = $sentence['translations'][0]['metrics'][$metricName] - $sentence['translations'][1]['metrics'][$metricName];
-				$rowString .= ',' . $diff;
+				$rowString .= "\t" . $diff;
 			}
 			else {
-				$rowString .= ',"' . $sentence['translation'] . '"';
-				$rowString .= ',"' . $sentence['score'] . '"';
+				$rowString .= "\t" . $sentence['translation'];
+				$rowString .= "\t" . $sentence['score'];
 			}
 			array_push($row, $rowString);
 			$data[] = $row;

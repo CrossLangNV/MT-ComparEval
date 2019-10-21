@@ -44,6 +44,7 @@ class RouterFactory
 			$router[] = new Route('api/testsets/delete/<id>', 'Api:TestSets:delete');
 			$router[] = new Route('api/testsets/downloadSource/<id>', 'Api:TestSets:downloadSource');
 			$router[] = new Route('api/testsets/downloadReference/<id>', 'Api:TestSets:downloadReference');
+			$router[] = new Route('api/testsets/downloadEngineFiles/<id>', 'Api:TestSets:downloadEngineFiles');
 			$router[] = new Route('api/language-pair/new', 'Api:TestSets:createLanguagePair');
 			$router[] = new Route('api/language-pair/delete/<id>', 'Api:TestSets:deleteLanguagePair');
 			$router[] = new Route('api/engine/new', 'Api:TestSets:addEngine');

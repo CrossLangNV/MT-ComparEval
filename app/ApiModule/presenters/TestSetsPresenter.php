@@ -220,4 +220,38 @@ class TestSetsPresenter extends BasePresenter {
 		$this->terminate();
 	}
 
+	public function renderDownloadEngineFiles( $id ) {
+		$engine = $this->enginesModel->getEngineById($id);
+		$path = __DIR__ . '/../../../engines-data/' . $engine['url_key'];
+
+		$zipname = 'engine-training-files-' . $engine['name'] . '.zip';
+		$zip = new \ZipArchive;
+		$zip->open($zipname, \ZipArchive::CREATE);
+
+		$configFile = $path . '/config.yaml';
+		$download_file = file_get_contents($configFile);
+		$zip->addFromString($engine['name'] . '/' . basename($configFile), $download_file);
+
+		foreach (new \DirectoryIterator($path . '/model/') as $modelFile) {
+			if($modelFile->isDot()) continue;
+			$download_file = file_get_contents($modelFile->getPathname());
+			$zip->addFromString($engine['name'] . '/model/' . basename($modelFile), $download_file);
+		}
+
+		foreach (new \DirectoryIterator($path . '/bpe-model/') as $modelFile) {
+			if($modelFile->isDot()) continue;
+			$download_file = file_get_contents($modelFile->getPathname());
+			$zip->addFromString($engine['name'] . '/bpe-model/' . basename($modelFile), $download_file);
+		}
+
+		$zip->close();
+
+		header('Content-Type: application/zip');
+		header('Content-disposition: attachment; filename='.$zipname);
+		header('Content-Length: ' . filesize($zipname));
+		readfile($zipname);
+
+		$this->terminate();
+	}
+
 }

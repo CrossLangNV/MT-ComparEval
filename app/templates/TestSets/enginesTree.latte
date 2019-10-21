@@ -114,4 +114,7 @@
 
 <div>
   <a href="{plink TestSets:enginesTreeGlobal}" class="btn btn-default" style="margin-top:25px;">View global engine hierarchy</a>
+  {if $hasFiles}
+		<a href="{plink Api:TestSets:downloadEngineFiles $engineId}" class="btn btn-default" style="margin-top:25px;">Download the engine training files</a>
+  {/if}
 </div>
